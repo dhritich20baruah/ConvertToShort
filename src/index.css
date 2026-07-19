@@ -1,0 +1,44 @@
+@import "tailwindcss";
+@theme {
+  --font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 100px;
+
+  --color-canvas: #fafafa;
+  --color-canvas-elevated: #ffffff;
+  --color-ink: #171717;
+  --color-body: #4d4d4d;
+  --color-mute: #8f8f8f;
+  --color-faint: #a1a1a1;
+  --color-hairline: #ebebeb;
+  --color-hairline-soft: #f2f2f2;
+  --color-accent: #0070f3;
+  --color-accent-ink: #ffffff;
+  --color-error: #ee0000;
+  --color-warning: #f5a623;
+}
+
+.dark {
+  --color-canvas: #0a0a0a;
+  --color-canvas-elevated: #141414;
+  --color-ink: #ededed;
+  --color-body: #b0b0b0;
+  --color-mute: #7a7a7a;
+  --color-faint: #5c5c5c;
+  --color-hairline: rgba(255, 255, 255, 0.1);
+  --color-hairline-soft: rgba(255, 255, 255, 0.06);
+  --color-accent: #3291ff;
+  --color-accent-ink: #ffffff;
+  --color-error: #ff4040;
+  --color-warning: #f7b955;
+}
+
+body {
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
