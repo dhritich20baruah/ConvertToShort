@@ -1,0 +1,65 @@
+import { Link } from "react-router-dom";
+import ThemeToggle from "../../components/ui/theme-toggle";
+import Footer from "../../components/landing/Footer";
+
+export default function NotFound() {
+  return (
+    <div className="min-h-screen flex flex-col bg-canvas">
+
+      {/* Navbar */}
+      <header className="h-14 sticky top-0 z-50 flex items-center justify-between px-6 bg-canvas-elevated border-b border-hairline">
+        <Link to="/" className="flex items-center gap-2.5 no-underline">
+          <div className="w-7 h-7 rounded-sm bg-accent flex items-center justify-center shrink-0">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <rect x="4" y="1" width="6" height="12" rx="1.5" stroke="white" strokeWidth="1.5" />
+              <line x1="1" y1="4" x2="3" y2="4" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+              <line x1="1" y1="7" x2="3" y2="7" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+              <line x1="1" y1="10" x2="3" y2="10" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+              <line x1="11" y1="4" x2="13" y2="4" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+              <line x1="11" y1="7" x2="13" y2="7" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+              <line x1="11" y1="10" x2="13" y2="10" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+          </div>
+          <span className="text-[15px] font-semibold text-ink tracking-tight">
+            Convert to Shorts
+          </span>
+        </Link>
+        <ThemeToggle />
+      </header>
+
+      {/* 404 content */}
+      <main className="flex-1 flex flex-col items-center justify-center px-6 gap-6 text-center">
+        <div
+          className="text-[120px] font-bold leading-none tracking-tight"
+          style={{ color: "var(--color-hairline)" }}
+        >
+          404
+        </div>
+        <div className="flex flex-col gap-2 max-w-100">
+          <h1 className="text-[22px] font-bold text-ink tracking-tight">
+            Page not found
+          </h1>
+          <p className="text-[14px] text-body leading-relaxed">
+            The page you're looking for doesn't exist or has been moved.
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-pill bg-accent text-accent-ink font-semibold text-[14px] no-underline hover:opacity-90 transition-opacity"
+          >
+            Go to homepage
+          </Link>
+          <Link
+            to="/contact"
+            className="text-[14px] text-mute no-underline hover:text-ink transition-colors"
+          >
+            Contact us
+          </Link>
+        </div>
+      </main>
+
+      <Footer />
+    </div>
+  );
+}
