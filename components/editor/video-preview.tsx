@@ -274,7 +274,7 @@ export default function VideoPreview({ videoMeta, cropX, onCropXChange }: Props)
           </span>
 
           {/* Resolution badge */}
-          <span className="ml-auto text-[11px] text-faint font-mono">
+          <span className="ml-auto text-[11px] text-faint font-mono hidden sm:inline">
             {videoMeta.width}×{videoMeta.height}
           </span>
         </div>

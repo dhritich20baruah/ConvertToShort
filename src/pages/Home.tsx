@@ -134,7 +134,7 @@ export default function Home() {
 
         {/* Crop stage */}
         {stage === "crop" && videoMeta && (
-          <div className="w-full max-w-225 grid grid-cols-[1fr_300px] gap-6 items-start">
+          <div className="w-full max-w-225 flex flex-col gap-6 lg:grid lg:grid-cols-[1fr_300px] lg:items-start">
             <VideoPreview
               videoMeta={videoMeta}
               cropX={cropX}
@@ -237,7 +237,7 @@ export default function Home() {
         )}
       </main>
       <SeoContent />
-      <Footer/>
+      <Footer />
     </div>
   )
 }

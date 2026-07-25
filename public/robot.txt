@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://converttoshorts.com/sitemap.xml
