@@ -5,7 +5,7 @@ import VideoPreview from "../../components/editor/video-preview";
 import ExportPanel from "../../components/editor/export-panel";
 import ProgressOverlay from "../../components/editor/progress-overlay";
 import { useVideoProcessor } from "../../hooks/use-video-processor";
-import type { CropMode, Quality } from "../../lib/types";
+import type { CropMode, Quality, TextOverlay } from "../../lib/types";
 import type { VideoMeta } from "../../lib/types";
 import SeoContent from "../../components/landing/seo-content";
 import Footer from "../../components/landing/Footer";
@@ -19,9 +19,17 @@ export default function Home() {
   const [cropX, setCropX] = useState(0.5);
   const [cropMode, setCropMode] = useState<CropMode>("center");
   const [quality, setQuality] = useState<Quality>("high");
-
+  const [trimStart, setTrimStart] = useState(0);
+  const [trimEnd, setTrimEnd] = useState(0);
   // ── Output URL derived from blob ───────────────────────────────────────────
   const [outputUrl, setOutputUrl] = useState<string | null>(null);
+  const [textOverlay, setTextOverlay] = useState<TextOverlay>({
+    enabled: false,
+    text: "",
+    position: "bottom",
+    color: "white",
+    size: "medium",
+  });
 
   // ── Processor hook ─────────────────────────────────────────────────────────
   const {
@@ -57,12 +65,21 @@ export default function Home() {
 
   function handleFileAccepted(meta: VideoMeta) {
     setVideoMeta(meta);
+    setTrimStart(0);
+    setTrimEnd(meta.duration); // ← initialize to full duration
     setStage("crop");
   }
 
   function handleExport() {
     if (!videoMeta) return;
-    start(videoMeta, { cropMode, quality, cropX });
+    start(videoMeta, {
+      cropMode,
+      quality,
+      cropX,
+      trimStart,
+      trimEnd,
+      textOverlay,
+    });
   }
 
   function handleCancel() {
@@ -77,8 +94,17 @@ export default function Home() {
     setCropX(0.5);
     setCropMode("center");
     setQuality("high");
+    setTrimStart(0);
+    setTrimEnd(0);
     resetProcessor();
     setStage("upload");
+    setTextOverlay({
+      enabled: false,
+      text: "",
+      position: "bottom",
+      color: "white",
+      size: "medium",
+    });
   }
 
   return (
@@ -127,7 +153,7 @@ export default function Home() {
             </div>
             <UploadDropzone onFileAccepted={handleFileAccepted} />
             <p className="text-xs text-faint text-center">
-              MP4 or MOV · Max 90 seconds · Up to 1080p
+              MP4 or MOV · Max 10 minutes · Up to 1080p
             </p>
           </>
         )}
@@ -139,6 +165,12 @@ export default function Home() {
               videoMeta={videoMeta}
               cropX={cropX}
               onCropXChange={setCropX}
+              trimStart={trimStart}
+              trimEnd={trimEnd}
+              onTrimChange={(start, end) => {
+                setTrimStart(start);
+                setTrimEnd(end);
+              }}
             />
             <ExportPanel
               onExport={handleExport}
@@ -146,6 +178,10 @@ export default function Home() {
               quality={quality}
               onCropModeChange={setCropMode}
               onQualityChange={setQuality}
+              trimStart={trimStart}
+              trimEnd={trimEnd}
+              textOverlay={textOverlay}
+              onTextOverlayChange={setTextOverlay}
             />
           </div>
         )}

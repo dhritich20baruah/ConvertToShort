@@ -2,7 +2,7 @@ import type { VideoMeta } from '../../lib/types';
 import React from 'react'
 import { useRef, useState, useCallback } from 'react';
 
-const MAX_DURATION = 90;
+const MAX_DURATION = 600;
 const MAX_WIDTH = 1920;
 const MAX_HEIGHT = 1080;
 const ACCEPTED_TYPES = ["video/mp4", "video/quicktime"];
@@ -49,7 +49,7 @@ export default function UploadDropzone({ onFileAccepted }: Props) {
           setLoading(false);
           setDropState("error");
           setErrorMessage(
-            `Video is ${Math.round(duration)}s — max allowed is ${MAX_DURATION}s.`
+            `Video is ${Math.round(duration)}s — max allowed is 10 minutes.`
           );
           return;
         }

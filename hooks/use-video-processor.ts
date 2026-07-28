@@ -64,7 +64,7 @@ export function useVideoProcessor(): UseVideoProcessorResult {
       if (cancelledRef.current) return;
 
       // Build filter
-      const { cropMode, cropX, quality } = options;
+      const { cropMode, cropX, quality, trimStart, trimEnd } = options;
       const { width: sourceWidth, height: sourceHeight } = meta;
 
       const cropWidth = Math.round(sourceHeight * (9 / 16));
@@ -86,6 +86,10 @@ export function useVideoProcessor(): UseVideoProcessorResult {
           `[bg][fg]overlay=0:${innerY}[v]`,
         ].join(";");
         args = [
+          "-ss",
+          trimStart.toFixed(3), // seek to start — before -i for fast seeking
+          "-to",
+          trimEnd.toFixed(3), // end point
           "-i",
           "input.mp4",
           "-filter_complex",
@@ -112,6 +116,10 @@ export function useVideoProcessor(): UseVideoProcessorResult {
       } else {
         const vf = `crop=${cropWidth}:${cropHeight}:${cropXPx}:0,scale=1080:1920,setsar=1`;
         args = [
+          "-ss",
+          trimStart.toFixed(3),
+          "-to",
+          trimEnd.toFixed(3),
           "-i",
           "input.mp4",
           "-vf",

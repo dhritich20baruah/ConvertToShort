@@ -1,15 +1,25 @@
-import React, { useRef, useState, useCallback, useEffect } from 'react';
-import type { VideoMeta } from '../../lib/types';
+import { useRef, useState, useCallback, useEffect } from "react";
+import type { VideoMeta } from "../../lib/types";
 
 type Props = {
   videoMeta: VideoMeta;
   cropX: number;
   onCropXChange: (x: number) => void;
-}
+  trimStart: number;
+  trimEnd: number;
+  onTrimChange: (start: number, end: number) => void;
+};
 
 const TARGET_RATIO = 9 / 16;
 
-export default function VideoPreview({ videoMeta, cropX, onCropXChange }: Props) {
+export default function VideoPreview({
+  videoMeta,
+  cropX,
+  onCropXChange,
+  trimStart,
+  trimEnd,
+  onTrimChange,
+}: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -17,10 +27,18 @@ export default function VideoPreview({ videoMeta, cropX, onCropXChange }: Props)
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
 
-  const dragging = useRef(false);
-  const dragStartX = useRef(0);
-  const dragStartCropX = useRef(0);
+  // Crop drag state
+  const cropDragging = useRef(false);
+  const cropDragStartX = useRef(0);
+  const cropDragStartCropX = useRef(0);
 
+  // Trim drag state
+  type TrimHandle = "start" | "end" | null;
+  const trimDragging = useRef<TrimHandle>(null);
+
+  const duration = videoMeta.duration;
+
+  // Measure container
   useEffect(() => {
     function measure() {
       const container = containerRef.current;
@@ -31,73 +49,62 @@ export default function VideoPreview({ videoMeta, cropX, onCropXChange }: Props)
       const displayHeight = displayWidth / videoRatio;
       setDisplaySize({ width: displayWidth, height: displayHeight });
 
-      // Center crop window on first load
       const cropWindowWidth = TARGET_RATIO * displayHeight;
       const maxLeft = displayWidth - cropWindowWidth;
       onCropXChange((maxLeft / 2) / displayWidth);
     }
+
     measure();
     window.addEventListener("resize", measure);
     return () => window.removeEventListener("resize", measure);
   }, [videoMeta.width, videoMeta.height]);
 
-  // Crop window dimensions in display pixels
+  // Crop window dimensions
   const cropWindowWidth = TARGET_RATIO * displaySize.height;
   const cropWindowLeft = cropX * displaySize.width;
 
-  // Clamp cropX so window never goes out of bounds
   function clampCropX(raw: number) {
     const maxLeft = displaySize.width - cropWindowWidth;
     return Math.min(Math.max(raw, 0), maxLeft / displaySize.width);
   }
 
-  // Drag handlers
-  const onMouseDown = useCallback((e: React.MouseEvent) => {
+  // ── Crop drag handlers ────────────────────────────────────────────────────
+
+  const onCropMouseDown = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
-    dragging.current = true;
-    dragStartX.current = e.clientX;
-    dragStartCropX.current = cropX;
+    cropDragging.current = true;
+    cropDragStartX.current = e.clientX;
+    cropDragStartCropX.current = cropX;
+  }, [cropX]);
+
+  const onCropTouchStart = useCallback((e: React.TouchEvent) => {
+    cropDragging.current = true;
+    cropDragStartX.current = e.touches[0].clientX;
+    cropDragStartCropX.current = cropX;
   }, [cropX]);
 
   useEffect(() => {
     function onMouseMove(e: MouseEvent) {
-      if (!dragging.current) return;
-      const dx = e.clientX - dragStartX.current;
-      const newCropX = dragStartCropX.current + dx / displaySize.width;
-      onCropXChange(clampCropX(newCropX));
+      if (!cropDragging.current) return;
+      const dx = e.clientX - cropDragStartX.current;
+      onCropXChange(clampCropX(cropDragStartCropX.current + dx / displaySize.width));
     }
-
-    function onMouseUp() {
-      dragging.current = false;
-    }
-
+    function onMouseUp() { cropDragging.current = false; }
     window.addEventListener("mousemove", onMouseMove);
     window.addEventListener("mouseup", onMouseUp);
     return () => {
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("mouseup", onMouseUp);
     };
-  }, [displaySize.width, cropWindowWidth])
-
-  // Touch handlers for mobile
-  const onTouchStart = useCallback((e: React.TouchEvent) => {
-    dragging.current = true;
-    dragStartX.current = e.touches[0].clientX;
-    dragStartCropX.current = cropX;
-  }, [cropX]);
+  }, [displaySize.width, cropWindowWidth]);
 
   useEffect(() => {
     function onTouchMove(e: TouchEvent) {
-      if (!dragging.current) return;
-      const dx = e.touches[0].clientX - dragStartX.current;
-      const newCropX = dragStartCropX.current + dx / displaySize.width;
-      onCropXChange(clampCropX(newCropX));
+      if (!cropDragging.current) return;
+      const dx = e.touches[0].clientX - cropDragStartX.current;
+      onCropXChange(clampCropX(cropDragStartCropX.current + dx / displaySize.width));
     }
-
-    function onTouchEnd() {
-      dragging.current = false;
-    }
-
+    function onTouchEnd() { cropDragging.current = false; }
     window.addEventListener("touchmove", onTouchMove);
     window.addEventListener("touchend", onTouchEnd);
     return () => {
@@ -106,11 +113,68 @@ export default function VideoPreview({ videoMeta, cropX, onCropXChange }: Props)
     };
   }, [displaySize.width, cropWindowWidth]);
 
-  // Playback controls
+  // ── Trim drag handlers ────────────────────────────────────────────────────
+
+  function onTrimHandleMouseDown(e: React.MouseEvent, handle: TrimHandle) {
+    e.preventDefault();
+    e.stopPropagation();
+    trimDragging.current = handle;
+  }
+
+  function onTrimHandleTouchStart(e: React.TouchEvent, handle: TrimHandle) {
+    e.stopPropagation();
+    trimDragging.current = handle;
+  }
+
+  useEffect(() => {
+    function getBarX(e: MouseEvent | TouchEvent): number {
+      const bar = document.getElementById("trim-bar");
+      if (!bar) return 0;
+      const rect = bar.getBoundingClientRect();
+      const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+      return Math.min(Math.max((clientX - rect.left) / rect.width, 0), 1);
+    }
+
+    function onMove(e: MouseEvent | TouchEvent) {
+      if (!trimDragging.current) return;
+      const fraction = getBarX(e);
+      const t = fraction * duration;
+
+      if (trimDragging.current === "start") {
+        const newStart = Math.min(t, trimEnd - 0.5);
+        onTrimChange(Math.max(newStart, 0), trimEnd);
+        if (videoRef.current) videoRef.current.currentTime = Math.max(newStart, 0);
+      } else {
+        const newEnd = Math.max(t, trimStart + 0.5);
+        onTrimChange(trimStart, Math.min(newEnd, duration));
+        if (videoRef.current) videoRef.current.currentTime = Math.min(newEnd, duration);
+      }
+    }
+
+    function onUp() { trimDragging.current = null; }
+
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+    window.addEventListener("touchmove", onMove);
+    window.addEventListener("touchend", onUp);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+      window.removeEventListener("touchmove", onMove);
+      window.removeEventListener("touchend", onUp);
+    };
+  }, [trimStart, trimEnd, duration]);
+
+  // ── Playback ──────────────────────────────────────────────────────────────
+
   function togglePlay() {
     const video = videoRef.current;
     if (!video) return;
     if (video.paused) {
+      // If playhead is outside trim range, reset to trimStart
+      if (video.currentTime < trimStart || video.currentTime >= trimEnd) {
+        video.currentTime = trimStart;
+      }
       video.play();
       setIsPlaying(true);
     } else {
@@ -120,17 +184,25 @@ export default function VideoPreview({ videoMeta, cropX, onCropXChange }: Props)
   }
 
   function onTimeUpdate() {
-    setCurrentTime(videoRef.current?.currentTime ?? 0);
+    const video = videoRef.current;
+    if (!video) return;
+    const t = video.currentTime;
+    setCurrentTime(t);
+    // Stop at trim end
+    if (t >= trimEnd) {
+      video.pause();
+      video.currentTime = trimEnd;
+      setIsPlaying(false);
+    }
   }
 
-  function onEnded() {
-    setIsPlaying(false);
-  }
+  function onEnded() { setIsPlaying(false); }
 
   function onScrub(e: React.ChangeEvent<HTMLInputElement>) {
     const t = parseFloat(e.target.value);
-    if (videoRef.current) videoRef.current.currentTime = t;
-    setCurrentTime(t);
+    const clamped = Math.min(Math.max(t, trimStart), trimEnd);
+    if (videoRef.current) videoRef.current.currentTime = clamped;
+    setCurrentTime(clamped);
   }
 
   function formatTime(s: number) {
@@ -138,6 +210,11 @@ export default function VideoPreview({ videoMeta, cropX, onCropXChange }: Props)
     const sec = Math.floor(s % 60);
     return `${m}:${sec.toString().padStart(2, "0")}`;
   }
+
+  const clipDuration = trimEnd - trimStart;
+  const startFraction = trimStart / duration;
+  const endFraction = trimEnd / duration;
+  const playFraction = duration > 0 ? currentTime / duration : 0;
 
   return (
     <div className="flex flex-col gap-3">
@@ -158,7 +235,6 @@ export default function VideoPreview({ videoMeta, cropX, onCropXChange }: Props)
         className="relative w-full rounded-md overflow-hidden bg-black select-none"
         style={{ height: displaySize.height || "auto" }}
       >
-        {/* Video */}
         <video
           ref={videoRef}
           src={videoMeta.url}
@@ -175,56 +251,28 @@ export default function VideoPreview({ videoMeta, cropX, onCropXChange }: Props)
               className="absolute top-0 left-0 h-full bg-black/60 pointer-events-none"
               style={{ width: cropWindowLeft }}
             />
-
             {/* Right dark mask */}
             <div
               className="absolute top-0 right-0 h-full bg-black/60 pointer-events-none"
-              style={{
-                width: displaySize.width - cropWindowLeft - cropWindowWidth,
-              }}
+              style={{ width: displaySize.width - cropWindowLeft - cropWindowWidth }}
             />
-
-            {/* Crop window border + drag handle */}
+            {/* Crop window */}
             <div
               className="absolute top-0 h-full cursor-ew-resize"
-              style={{
-                left: cropWindowLeft,
-                width: cropWindowWidth,
-              }}
-              onMouseDown={onMouseDown}
-              onTouchStart={onTouchStart}
+              style={{ left: cropWindowLeft, width: cropWindowWidth }}
+              onMouseDown={onCropMouseDown}
+              onTouchStart={onCropTouchStart}
             >
-              {/* Border */}
               <div className="absolute inset-0 border-2 border-accent rounded-sm pointer-events-none" />
-
-              {/* Corner handles */}
-              {[
-                "top-0 left-0",
-                "top-0 right-0",
-                "bottom-0 left-0",
-                "bottom-0 right-0",
-              ].map((pos) => (
-                <div
-                  key={pos}
-                  className={`absolute ${pos} w-3 h-3 bg-accent rounded-sm pointer-events-none`}
-                />
+              {["top-0 left-0", "top-0 right-0", "bottom-0 left-0", "bottom-0 right-0"].map((pos) => (
+                <div key={pos} className={`absolute ${pos} w-3 h-3 bg-accent rounded-sm pointer-events-none`} />
               ))}
-
-              {/* Center drag pill */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <div className="bg-accent/90 rounded-pill px-3 py-1.5 flex items-center gap-1.5">
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <path
-                      d="M5 4L2 7L5 10M9 4L12 7L9 10"
-                      stroke="white"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
+                    <path d="M5 4L2 7L5 10M9 4L12 7L9 10" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
-                  <span className="text-[11px] font-semibold text-white">
-                    9:16
-                  </span>
+                  <span className="text-[11px] font-semibold text-white">9:16</span>
                 </div>
               </div>
             </div>
@@ -232,15 +280,95 @@ export default function VideoPreview({ videoMeta, cropX, onCropXChange }: Props)
         )}
       </div>
 
-      {/* Playback controls */}
-      <div
-        className="flex flex-col gap-2 px-3 py-2.5 rounded-md bg-canvas-elevated border border-hairline"
-      >
-        {/* Scrubber */}
+      {/* Playback + trim controls */}
+      <div className="flex flex-col gap-3 px-3 py-3 rounded-md bg-canvas-elevated border border-hairline">
+
+        {/* Trim bar */}
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center justify-between mb-1">
+            <p className="text-[11px] font-medium text-mute uppercase tracking-widest">
+              Trim clip
+            </p>
+            <p className="text-[11px] text-faint font-mono">
+              {formatTime(trimStart)} — {formatTime(trimEnd)}
+              <span className="ml-2 text-accent">({clipDuration.toFixed(1)}s)</span>
+            </p>
+          </div>
+
+          {/* Trim track */}
+          <div
+            id="trim-bar"
+            className="relative w-full h-8 rounded-sm bg-canvas select-none"
+            style={{ border: "1px solid var(--color-hairline)" }}
+          >
+            {/* Full track background */}
+            <div className="absolute inset-0 rounded-sm overflow-hidden">
+              {/* Dimmed region before start */}
+              <div
+                className="absolute top-0 left-0 h-full bg-black/30"
+                style={{ width: `${startFraction * 100}%` }}
+              />
+              {/* Selected region */}
+              <div
+                className="absolute top-0 h-full bg-accent/20 border-y-2 border-accent"
+                style={{
+                  left: `${startFraction * 100}%`,
+                  width: `${(endFraction - startFraction) * 100}%`,
+                }}
+              />
+              {/* Dimmed region after end */}
+              <div
+                className="absolute top-0 right-0 h-full bg-black/30"
+                style={{ width: `${(1 - endFraction) * 100}%` }}
+              />
+              {/* Playhead */}
+              <div
+                className="absolute top-0 h-full w-0.5 bg-white/80 pointer-events-none"
+                style={{ left: `${playFraction * 100}%` }}
+              />
+            </div>
+
+            {/* Start handle */}
+            <div
+              className="absolute top-0 h-full w-4 flex items-center justify-center cursor-ew-resize z-10 group"
+              style={{
+                left: `calc(${startFraction * 100}% - 8px)`,
+              }}
+              onMouseDown={(e) => onTrimHandleMouseDown(e, "start")}
+              onTouchStart={(e) => onTrimHandleTouchStart(e, "start")}
+            >
+              <div className="w-3 h-full rounded-l-sm bg-accent flex items-center justify-center">
+                <svg width="6" height="12" viewBox="0 0 6 12" fill="none">
+                  <line x1="2" y1="2" x2="2" y2="10" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+                  <line x1="4" y1="2" x2="4" y2="10" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+              </div>
+            </div>
+
+            {/* End handle */}
+            <div
+              className="absolute top-0 h-full w-4 flex items-center justify-center cursor-ew-resize z-10"
+              style={{
+                left: `calc(${endFraction * 100}% - 8px)`,
+              }}
+              onMouseDown={(e) => onTrimHandleMouseDown(e, "end")}
+              onTouchStart={(e) => onTrimHandleTouchStart(e, "end")}
+            >
+              <div className="w-3 h-full rounded-r-sm bg-accent flex items-center justify-center">
+                <svg width="6" height="12" viewBox="0 0 6 12" fill="none">
+                  <line x1="2" y1="2" x2="2" y2="10" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+                  <line x1="4" y1="2" x2="4" y2="10" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Playback scrubber */}
         <input
           type="range"
           min={0}
-          max={videoMeta.duration}
+          max={duration}
           step={0.01}
           value={currentTime}
           onChange={onScrub}
@@ -261,24 +389,20 @@ export default function VideoPreview({ videoMeta, cropX, onCropXChange }: Props)
               </svg>
             ) : (
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                <path
-                  d="M3 2L10 6L3 10V2Z"
-                  fill="currentColor"
-                />
+                <path d="M3 2L10 6L3 10V2Z" fill="currentColor" />
               </svg>
             )}
           </button>
 
           <span className="text-[12px] font-mono text-mute tabular-nums">
-            {formatTime(currentTime)} / {formatTime(videoMeta.duration)}
+            {formatTime(currentTime)} / {formatTime(duration)}
           </span>
 
-          {/* Resolution badge */}
           <span className="ml-auto text-[11px] text-faint font-mono hidden sm:inline">
             {videoMeta.width}×{videoMeta.height}
           </span>
         </div>
       </div>
     </div>
-  )
+  );
 }

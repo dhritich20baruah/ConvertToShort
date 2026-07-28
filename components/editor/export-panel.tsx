@@ -1,5 +1,5 @@
 import React from 'react';
-import type { CropMode, Quality} from "../../lib/types"
+import type { CropMode, Quality, TextOverlay, TextColor, TextPosition, TextSize } from "../../lib/types";
 
 type Props = {
   onExport: () => void;
@@ -7,17 +7,37 @@ type Props = {
   quality: Quality;
   onCropModeChange: (mode: CropMode) => void;
   onQualityChange: (quality: Quality) => void;
-}
+  trimStart: number;
+  trimEnd: number;
+  textOverlay: TextOverlay;
+  onTextOverlayChange: (overlay: TextOverlay) => void;
+};
 
-export default function ExportPanel({ onExport, cropMode, quality, onCropModeChange, onQualityChange }: Props) {
+export default function ExportPanel({ onExport,
+  cropMode,
+  quality,
+  onCropModeChange,
+  onQualityChange,
+  trimStart,
+  trimEnd,
+  textOverlay,
+  onTextOverlayChange, }: Props) {
 
+  function updateOverlay<K extends keyof TextOverlay>(
+    key: K,
+    value: TextOverlay[K]
+  ) {
+    onTextOverlayChange({ ...textOverlay, [key]: value });
+  }
+
+  const clipDuration = trimEnd - trimStart;
   return (
     <div className="flex flex-col gap-4 p-4 rounded-md bg-canvas-elevated border border-hairline">
       <div>
         <p className="text-[13px] font-semibold text-ink">Export settings</p>
         <p className="text-[12px] text-mute mt-0.5">Output: 1080 × 1920 · MP4</p>
       </div>
-      <Divider/>
+      <Divider />
       <div className='flex flex-col gap-2'>
         <p className="text-[12px] font-medium text-mute uppercase tracking-widest">
           Style
@@ -108,10 +128,10 @@ export default function ExportPanel({ onExport, cropMode, quality, onCropModeCha
           />
         </div>
       </div>
-      <Divider/>
+      <Divider />
       {/* Quality */}
       <div className='flex flex-col gap-2'>
-         <p className="text-[12px] font-medium text-mute uppercase tracking-widest">
+        <p className="text-[12px] font-medium text-mute uppercase tracking-widest">
           Quality
         </p>
         <div className="flex gap-2">
@@ -128,13 +148,132 @@ export default function ExportPanel({ onExport, cropMode, quality, onCropModeCha
             sub="~4 Mbps"
           />
         </div>
-          <p className="text-[11px] text-faint leading-relaxed">
+        <p className="text-[11px] text-faint leading-relaxed">
           {quality === "high"
             ? "Best for uploading to YouTube directly."
             : "Smaller file size, good for sharing."}
         </p>
       </div>
-      <Divider/>
+      <Divider />
+
+      {/* Text overlay */}
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center justify-between">
+          <p className="text-[12px] font-medium text-mute uppercase tracking-widest">
+            Text overlay
+          </p>
+          {/* Toggle */}
+          <button
+            onClick={() => updateOverlay("enabled", !textOverlay.enabled)}
+            className={[
+              "w-10 h-5 rounded-pill border transition-colors duration-150 relative",
+              textOverlay.enabled
+                ? "bg-accent border-accent"
+                : "bg-canvas border-hairline",
+            ].join(" ")}
+            aria-label="Toggle text overlay"
+          >
+            <div
+              className={[
+                "absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform duration-150",
+                textOverlay.enabled ? "translate-x-5" : "translate-x-0.5",
+              ].join(" ")}
+            />
+          </button>
+        </div>
+
+        {textOverlay.enabled && (
+          <div className="flex flex-col gap-3">
+
+            {/* Text input */}
+            <textarea
+              rows={2}
+              value={textOverlay.text}
+              onChange={(e) => updateOverlay("text", e.target.value)}
+              placeholder="Enter your text…"
+              maxLength={100}
+              className="w-full px-3 py-2 rounded-sm border border-hairline bg-canvas text-ink text-[13px] placeholder:text-faint focus:outline-none focus:border-accent transition-colors resize-none"
+            />
+
+            {/* Position */}
+            <div className="flex flex-col gap-1.5">
+              <p className="text-[11px] font-medium text-mute uppercase tracking-widest">
+                Position
+              </p>
+              <div className="flex gap-2">
+                {(["top", "center", "bottom"] as TextPosition[]).map((pos) => (
+                  <button
+                    key={pos}
+                    onClick={() => updateOverlay("position", pos)}
+                    className={[
+                      "flex-1 py-1.5 rounded-sm border text-[12px] font-medium cursor-pointer transition-colors capitalize",
+                      textOverlay.position === pos
+                        ? "border-accent bg-accent/10 text-accent"
+                        : "border-hairline bg-canvas text-mute hover:border-accent/50",
+                    ].join(" ")}
+                  >
+                    {pos}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Color */}
+            <div className="flex flex-col gap-1.5">
+              <p className="text-[11px] font-medium text-mute uppercase tracking-widest">
+                Color
+              </p>
+              <div className="flex gap-2">
+                {([
+                  { value: "white", bg: "#ffffff", border: "#e0e0e0" },
+                  { value: "black", bg: "#000000", border: "#000000" },
+                  { value: "yellow", bg: "#facc15", border: "#facc15" },
+                ] as { value: TextColor; bg: string; border: string }[]).map(
+                  ({ value, bg, border }) => (
+                    <button
+                      key={value}
+                      onClick={() => updateOverlay("color", value)}
+                      aria-label={value}
+                      className={[
+                        "w-8 h-8 rounded-sm border-2 cursor-pointer transition-all",
+                        textOverlay.color === value
+                          ? "border-accent scale-110"
+                          : "border-transparent hover:border-hairline",
+                      ].join(" ")}
+                      style={{ backgroundColor: bg, outline: `1px solid ${border}` }}
+                    />
+                  )
+                )}
+              </div>
+            </div>
+
+            {/* Size */}
+            <div className="flex flex-col gap-1.5">
+              <p className="text-[11px] font-medium text-mute uppercase tracking-widest">
+                Size
+              </p>
+              <div className="flex gap-2">
+                {(["small", "medium", "large"] as TextSize[]).map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => updateOverlay("size", s)}
+                    className={[
+                      "flex-1 py-1.5 rounded-sm border text-[12px] font-medium cursor-pointer transition-colors capitalize",
+                      textOverlay.size === s
+                        ? "border-accent bg-accent/10 text-accent"
+                        : "border-hairline bg-canvas text-mute hover:border-accent/50",
+                    ].join(" ")}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+          </div>
+        )}
+      </div>
+      <Divider />
       {/* Output info */}
       <div className="flex flex-col gap-1 5">
         <p className="text-[12px] font-medium text-mute uppercase tracking-widest">
@@ -152,13 +291,20 @@ export default function ExportPanel({ onExport, cropMode, quality, onCropModeCha
             label="Bitrate"
             value={quality === "high" ? "~8 Mbps" : "~4 Mbps"}
           />
+          <InfoRow
+            label="Clip duration"
+            value={`${clipDuration.toFixed(1)}s`}
+          />
+          {textOverlay.enabled && textOverlay.text.trim() && (
+            <InfoRow label="Text" value={`"${textOverlay.text.slice(0, 20)}${textOverlay.text.length > 20 ? "…" : ""}"`} />
+          )}
         </div>
       </div>
 
-      <Divider/>
+      <Divider />
       {/* Privacy note */}
       <div className="flex items-start gap-2">
-         <svg
+        <svg
           width="14"
           height="14"
           viewBox="0 0 14 14"
@@ -195,13 +341,13 @@ export default function ExportPanel({ onExport, cropMode, quality, onCropModeCha
 }
 
 // SUB COMPONENETS
-function Divider(){
+function Divider() {
   return <div className="h-px bg-hairline w-full"></div>
 }
 
-function InfoRow({label, value}: {label: string; value: string}){
-  return(
-     <div className="flex items-center justify-between">
+function InfoRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between">
       <span className="text-[12px] text-mute">{label}</span>
       <span className="text-[12px] font-medium text-body">{value}</span>
     </div>
