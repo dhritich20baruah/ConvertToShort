@@ -1,5 +1,11 @@
 import { useState, useRef, useCallback } from "react";
-import type { ExportOptions } from "../lib/types";
+import type {
+  ExportOptions,
+  TextOverlay,
+  TextSize,
+  TextColor,
+  TextPosition,
+} from "../lib/types";
 import type { VideoMeta } from "../lib/types";
 
 export type ProcessorStatus = "idle" | "processing" | "done" | "error";
@@ -13,6 +19,50 @@ export type UseVideoProcessorResult = {
   cancel: () => void;
   reset: () => void;
 };
+
+function buildDrawtextFilter(overlay: TextOverlay): string {
+  if (!overlay.enabled || !overlay.text.trim()) return "";
+
+  const sizeMap: Record<TextSize, number> = {
+    small: 48,
+    medium: 72,
+    large: 96,
+  };
+
+  const colorMap: Record<TextColor, string> = {
+    white: "white",
+    black: "black",
+    yellow: "yellow",
+  };
+
+  const yMap: Record<TextPosition, string> = {
+    top: "80",
+    center: "(h-text_h)/2",
+    bottom: "h-text_h-80",
+  };
+
+  const fontSize = sizeMap[overlay.size];
+  const fontColor = colorMap[overlay.color];
+  const y = yMap[overlay.position];
+
+  const escapedText = overlay.text
+    .replace(/\\/g, "\\\\")
+    .replace(/'/g, "\\'")
+    .replace(/:/g, "\\:");
+
+  return [
+    `drawtext=fontfile='font.ttf'`, // ← reference the loaded font
+    `text='${escapedText}'`,
+    `fontcolor=${fontColor}`,
+    `fontsize=${fontSize}`,
+    `x=(w-text_w)/2`,
+    `y=${y}`,
+    `box=1`,
+    `boxcolor=black@0.4`,
+    `boxborderw=16`,
+    `line_spacing=10`,
+  ].join(":");
+}
 
 export function useVideoProcessor(): UseVideoProcessorResult {
   const [status, setStatus] = useState<ProcessorStatus>("idle");
@@ -30,7 +80,6 @@ export function useVideoProcessor(): UseVideoProcessorResult {
     setErrorMessage(null);
 
     try {
-      // Dynamically import inside callback to avoid SSR issues
       const { FFmpeg } = await import("@ffmpeg/ffmpeg");
       const { fetchFile, toBlobURL } = await import("@ffmpeg/util");
 
@@ -47,7 +96,6 @@ export function useVideoProcessor(): UseVideoProcessorResult {
         console.log("[ffmpeg]", message);
       });
 
-      // Load ffmpeg core from public folder
       setProgress(5);
       await ffmpeg.load({
         coreURL: await toBlobURL("/ffmpeg-core.js", "text/javascript"),
@@ -57,14 +105,19 @@ export function useVideoProcessor(): UseVideoProcessorResult {
       if (cancelledRef.current) return;
       setProgress(10);
 
-      // Write input file
       await ffmpeg.writeFile("input.mp4", await fetchFile(meta.file));
       setProgress(15);
 
+      const { cropMode, cropX, quality, trimStart, trimEnd, textOverlay } =
+        options;
+      // Load font for drawtext filter
+      // Load font only when needed
+      if (textOverlay.enabled && textOverlay.text.trim()) {
+        await ffmpeg.writeFile("font.ttf", await fetchFile("/Roboto-Bold.ttf"));
+      }
+
       if (cancelledRef.current) return;
 
-      // Build filter
-      const { cropMode, cropX, quality, trimStart, trimEnd } = options;
       const { width: sourceWidth, height: sourceHeight } = meta;
 
       const cropWidth = Math.round(sourceHeight * (9 / 16));
@@ -74,22 +127,33 @@ export function useVideoProcessor(): UseVideoProcessorResult {
         Math.min(Math.max(cropX * sourceWidth, 0), maxX),
       );
       const crf = quality === "high" ? "18" : "23";
+      const drawtextFilter = buildDrawtextFilter(textOverlay);
 
       let args: string[];
 
       if (cropMode === "blur-letterbox") {
         const innerHeight = Math.round(1080 / (sourceWidth / sourceHeight));
         const innerY = Math.round((1920 - innerHeight) / 2);
-        const vf = [
-          `[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=20:5,setsar=1[bg]`,
-          `[0:v]scale=1080:-2,setsar=1[fg]`,
-          `[bg][fg]overlay=0:${innerY}[v]`,
-        ].join(";");
+
+        // Build filter_complex — append drawtext after overlay if present
+        const vf = drawtextFilter
+          ? [
+              `[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=20:5,setsar=1[bg]`,
+              `[0:v]scale=1080:-2,setsar=1[fg]`,
+              `[bg][fg]overlay=0:${innerY}[overlaid]`,
+              `[overlaid]${drawtextFilter}[v]`,
+            ].join(";")
+          : [
+              `[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=20:5,setsar=1[bg]`,
+              `[0:v]scale=1080:-2,setsar=1[fg]`,
+              `[bg][fg]overlay=0:${innerY}[v]`,
+            ].join(";");
+
         args = [
           "-ss",
-          trimStart.toFixed(3), // seek to start — before -i for fast seeking
+          trimStart.toFixed(3),
           "-to",
-          trimEnd.toFixed(3), // end point
+          trimEnd.toFixed(3),
           "-i",
           "input.mp4",
           "-filter_complex",
@@ -114,7 +178,14 @@ export function useVideoProcessor(): UseVideoProcessorResult {
           "output.mp4",
         ];
       } else {
-        const vf = `crop=${cropWidth}:${cropHeight}:${cropXPx}:0,scale=1080:1920,setsar=1`;
+        // Center crop — append drawtext to -vf chain if present
+        const vfFilters = [
+          `crop=${cropWidth}:${cropHeight}:${cropXPx}:0,scale=1080:1920,setsar=1`,
+          drawtextFilter,
+        ]
+          .filter(Boolean)
+          .join(",");
+
         args = [
           "-ss",
           trimStart.toFixed(3),
@@ -123,7 +194,7 @@ export function useVideoProcessor(): UseVideoProcessorResult {
           "-i",
           "input.mp4",
           "-vf",
-          vf,
+          vfFilters,
           "-c:v",
           "libx264",
           "-preset",
@@ -163,6 +234,9 @@ export function useVideoProcessor(): UseVideoProcessorResult {
       const blob = new Blob([plainBuffer], { type: "video/mp4" });
       await ffmpeg.deleteFile("input.mp4");
       await ffmpeg.deleteFile("output.mp4");
+      if (textOverlay.enabled && textOverlay.text.trim()) {
+        await ffmpeg.deleteFile("font.ttf");
+      }
 
       if (cancelledRef.current) return;
 
