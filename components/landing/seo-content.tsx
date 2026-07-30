@@ -7,22 +7,27 @@ export default function SeoContent() {
         <h2 className="text-[22px] font-bold text-ink tracking-tight mb-6">
           How to convert video to YouTube Shorts
         </h2>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
           {[
             {
               step: "1",
               title: "Drop your video",
-              body: "Upload any MP4 or MOV file up to 90 seconds. Your video is never sent to a server — everything stays on your device.",
+              body: "Upload any MP4 or MOV file up to 10 minutes long. Your video never leaves your device — everything stays local.",
             },
             {
               step: "2",
-              title: "Adjust the crop",
-              body: "Drag the 9:16 crop window left or right to frame the most important part of your video. Preview it before exporting.",
+              title: "Trim your clip",
+              body: "Drag the start and end handles on the trim bar to select exactly the portion you want to keep.",
             },
             {
               step: "3",
-              title: "Download your Short",
-              body: "Click Export Short and download a clean 1080×1920 MP4 ready to upload directly to YouTube Shorts.",
+              title: "Adjust the crop",
+              body: "Drag the 9:16 crop window to frame the most important part of your video. Choose center crop or blur letterbox style.",
+            },
+            {
+              step: "4",
+              title: "Add text and export",
+              body: "Optionally add a text overlay, then click Export Short to download a clean 1080×1920 MP4.",
             },
           ].map(({ step, title, body }) => (
             <div
@@ -39,13 +44,52 @@ export default function SeoContent() {
         </div>
       </section>
 
-      {/* USPs */}
+      {/* Features */}
       <section>
         <h2 className="text-[22px] font-bold text-ink tracking-tight mb-6">
-          Why use Convert to Shorts?
+          Everything you need to create YouTube Shorts
         </h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {[
+            {
+              title: "Trim clips from longer videos",
+              body: "Upload videos up to 10 minutes long and use the dual-handle trim bar to select exactly the clip you want. The selected duration is shown in real time so you can nail the perfect cut.",
+              icon: (
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <path d="M2 9h14M6 5v8M12 5v8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+              ),
+            },
+            {
+              title: "Crop to 9:16 with draggable window",
+              body: "Drag the 9:16 crop window left or right to choose exactly which part of the frame to keep. Preview the crop on the actual video before exporting.",
+              icon: (
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <rect x="2" y="4" width="14" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
+                  <rect x="6" y="4" width="6" height="10" rx="1" stroke="currentColor" strokeWidth="1" strokeDasharray="2 1" />
+                </svg>
+              ),
+            },
+            {
+              title: "Blur letterbox style",
+              body: "Keep your full original frame visible in the center with a blurred and darkened version of the same video filling the top and bottom — the most popular look on short-form video platforms.",
+              icon: (
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <rect x="5" y="1" width="8" height="16" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
+                  <rect x="5" y="1" width="8" height="4" rx="1.5" fill="currentColor" opacity="0.2" />
+                  <rect x="5" y="13" width="8" height="4" rx="1.5" fill="currentColor" opacity="0.2" />
+                </svg>
+              ),
+            },
+            {
+              title: "Text overlays",
+              body: "Add text directly to your Short. Choose position (top, center, or bottom), color (white, black, or yellow), and font size. The text is burned into the exported video — no extra editing needed.",
+              icon: (
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <path d="M3 4h12M9 4v10M6 14h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+              ),
+            },
             {
               title: "100% private — video never leaves your device",
               body: "Unlike other YouTube Shorts converters, your video is never uploaded to any server. All processing happens locally in your browser using WebAssembly. No one can see, store, or access your content.",
@@ -58,11 +102,11 @@ export default function SeoContent() {
             },
             {
               title: "Completely free — no watermark, no limits",
-              body: "Convert to Shorts is free with no hidden costs. No watermarks are added to your video, no export limits, no premium tier. Every feature is available to everyone at no cost.",
+              body: "Convert to Shorts is free with no hidden costs. No watermarks, no export limits, no premium tier. Every feature including trimming and text overlays is available to everyone at no cost.",
               icon: (
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
                   <circle cx="9" cy="9" r="7" stroke="currentColor" strokeWidth="1.5" />
-                  <path d="M9 5v4l3 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  <path d="M6 9l2 2 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               ),
             },
@@ -73,26 +117,6 @@ export default function SeoContent() {
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
                   <circle cx="9" cy="6" r="3" stroke="currentColor" strokeWidth="1.5" />
                   <path d="M3 16c0-3.31 2.69-6 6-6s6 2.69 6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
-              ),
-            },
-            {
-              title: "Instant — no upload wait time",
-              body: "Because your video never leaves your device, there's no upload time. Large files start processing immediately. Most videos convert in under a minute depending on your device.",
-              icon: (
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                  <path d="M9 3v6l4 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                  <circle cx="9" cy="9" r="7" stroke="currentColor" strokeWidth="1.5" />
-                </svg>
-              ),
-            },
-            {
-              title: "No file size restrictions",
-              body: "Server-based converters limit file sizes on free plans. Since we process everything locally, your only limit is your device's memory — which is typically much more generous.",
-              icon: (
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                  <rect x="3" y="3" width="12" height="12" rx="2" stroke="currentColor" strokeWidth="1.5" />
-                  <path d="M9 6v6M6 9h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                 </svg>
               ),
             },
@@ -133,43 +157,51 @@ export default function SeoContent() {
           {[
             {
               q: "How to create YouTube Shorts?",
-              a: "YouTube Shorts are vertical videos in a 9:16 aspect ratio (1080×1920 pixels) under 60 seconds long. To create one from an existing horizontal video, use Convert to Shorts — upload your video, drag the crop window to frame your content, and download the converted file. Then upload it directly to YouTube and it will automatically be recognized as a Short.",
+              a: "YouTube Shorts are vertical videos in a 9:16 aspect ratio (1080×1920 pixels) under 60 seconds long. To create one from an existing horizontal video, use Convert to Shorts — upload your video, trim it to the right length, drag the crop window to frame your content, optionally add a text overlay, and download the converted file. Then upload it directly to YouTube and it will automatically be recognized as a Short.",
             },
             {
               q: "How to create YouTube Shorts from existing video?",
-              a: "Upload your existing video to Convert to Shorts, drag the 9:16 crop window to select the part of the frame you want to keep, choose your style (center crop or blur letterbox), and click Export Short. Your video will be converted to 1080×1920 format and downloaded as an MP4 ready for YouTube Shorts upload. The whole process happens in your browser — no account needed.",
+              a: "Upload your existing video to Convert to Shorts, use the trim bar to select the clip you want, drag the 9:16 crop window to frame your content, choose your style (center crop or blur letterbox), add text if needed, and click Export Short. Your video will be converted to 1080×1920 format and downloaded as an MP4 ready for YouTube Shorts upload. The whole process happens in your browser — no account needed.",
             },
             {
               q: "How to create YouTube Shorts from existing videos for free?",
-              a: "Convert to Shorts is completely free with no watermarks, no export limits, and no account required. Just visit converttoshorts.com, drop your video, adjust the crop, and download. There are no hidden costs and no premium tier — every feature is free for everyone.",
+              a: "Convert to Shorts is completely free with no watermarks, no export limits, and no account required. Every feature — including trimming, text overlays, and blur letterbox — is free for everyone. Just visit converttoshorts.com, drop your video, and download your Short.",
+            },
+            {
+              q: "How do I trim a video for YouTube Shorts?",
+              a: "After uploading your video, you will see a trim bar below the video preview. Drag the left handle to set the start point and the right handle to set the end point of your clip. The selected duration is shown in real time. Only the trimmed portion will be exported. You can use source videos up to 10 minutes long.",
+            },
+            {
+              q: "Can I add text to my YouTube Short?",
+              a: "Yes. In the export panel, toggle on the Text overlay option. Type your text, choose the position (top, center, or bottom of the video), pick a color (white, black, or yellow), and select a font size (small, medium, or large). The text is burned directly into the exported video by ffmpeg so it appears on the final Short without needing any additional editing.",
+            },
+            {
+              q: "What is the difference between center crop and blur letterbox?",
+              a: "Center crop trims the left and right sides of your horizontal video to fit a 9:16 frame, keeping only the portion inside the draggable crop window. Blur letterbox keeps your full video visible in the center, with a blurred and darkened version of the same video filling the top and bottom. Blur letterbox is popular when you don't want to lose any of the original frame.",
             },
             {
               q: "Is my video uploaded to any server?",
               a: "No. Your video never leaves your device. Convert to Shorts processes everything locally in your browser using WebAssembly (ffmpeg.wasm). This means complete privacy, no upload wait times, and no file size restrictions imposed by server limits.",
             },
             {
-              q: "What is the best aspect ratio for YouTube Shorts?",
-              a: "YouTube Shorts require a 9:16 vertical aspect ratio. The optimal resolution is 1080×1920 pixels. Convert to Shorts automatically outputs your video at exactly 1080×1920, which is the recommended resolution for the best quality on YouTube Shorts.",
+              q: "What video formats does Convert to Shorts support?",
+              a: "Convert to Shorts supports MP4 and MOV video files up to 10 minutes long and up to 1080p resolution. The output is always an MP4 file in H.264 format at 1080×1920 resolution, which is directly compatible with YouTube Shorts upload requirements.",
             },
             {
-              q: "What video formats does Convert to Shorts support?",
-              a: "Convert to Shorts supports MP4 and MOV video files. The output is always an MP4 file in H.264 format at 1080×1920 resolution, which is directly compatible with YouTube Shorts upload requirements.",
+              q: "What is the best aspect ratio for YouTube Shorts?",
+              a: "YouTube Shorts require a 9:16 vertical aspect ratio. The optimal resolution is 1080×1920 pixels. Convert to Shorts automatically outputs your video at exactly 1080×1920, which is the recommended resolution for the best quality on YouTube Shorts.",
             },
             {
               q: "Does the converted video have a watermark?",
               a: "No. Convert to Shorts never adds a watermark to your video. The exported MP4 is clean, high quality, and ready to upload directly to YouTube Shorts.",
             },
             {
-              q: "What is the difference between center crop and blur letterbox?",
-              a: "Center crop trims the left and right sides of your horizontal video to fit a 9:16 frame, keeping only the middle portion. Blur letterbox keeps your full video visible in the center, with a blurred and darkened version of the same video filling the top and bottom. Blur letterbox is popular on TikTok and Reels when you don't want to lose any of the original frame.",
-            },
-            {
               q: "Do I need to create an account to use Convert to Shorts?",
               a: "No account, no registration, no email required. Just open converttoshorts.com and start converting. We don't collect any personal information.",
             },
             {
-              q: "How long can my video be?",
-              a: "Convert to Shorts supports videos up to 90 seconds long and up to 1080p resolution. YouTube Shorts themselves support videos up to 3 minutes, but the most effective Shorts are typically under 60 seconds.",
+              q: "How long can my source video be?",
+              a: "Convert to Shorts accepts source videos up to 10 minutes long and up to 1080p resolution. Use the trim bar to select the clip you want to export as a Short. YouTube Shorts themselves support videos up to 3 minutes, but the most effective Shorts are typically under 60 seconds.",
             },
           ].map(({ q, a }, i) => (
             <FaqItem key={i} question={q} answer={a} />
@@ -183,8 +215,8 @@ export default function SeoContent() {
           Ready to convert your video to a Short?
         </h2>
         <p className="text-[14px] text-body max-w-120 leading-relaxed">
-          Free, instant, and completely private. No upload, no account, no watermark.
-          Just drop your video and download your Short.
+          Trim, crop, add text, and export — free, instant, and completely private.
+          No upload, no account, no watermark.
         </p>
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
@@ -197,8 +229,6 @@ export default function SeoContent() {
     </div>
   );
 }
-
-// ── FAQ accordion item ─────────────────────────────────────────────────────────
 
 function FaqItem({ question, answer }: { question: string; answer: string }) {
   return (
