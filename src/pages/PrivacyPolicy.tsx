@@ -1,6 +1,8 @@
 import PageLayout from "../../components/landing/page-layout";
+import { useCanonical } from "../hooks/use-canonical";
 
 export default function PrivacyPolicy() {
+useCanonical("/privacy-policy");
   return (
     <PageLayout
       title="Privacy Policy"

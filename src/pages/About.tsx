@@ -1,7 +1,9 @@
 import PageLayout from "../../components/landing/page-layout";
 import { Link } from "react-router-dom";
+import { useCanonical } from "../hooks/use-canonical";
 
 export default function About() {
+  useCanonical("/about");
   return (
     <PageLayout
       title="About Convert to Shorts"

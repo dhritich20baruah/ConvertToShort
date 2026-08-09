@@ -9,10 +9,12 @@ import type { CropMode, Quality, TextOverlay } from "../../lib/types";
 import type { VideoMeta } from "../../lib/types";
 import SeoContent from "../../components/landing/seo-content";
 import Footer from "../../components/landing/Footer";
+import { useCanonical } from "../hooks/use-canonical";
 
 export type AppStage = "upload" | "crop" | "processing" | "done" | "error";
 
 export default function Home() {
+  useCanonical("/");
   const [stage, setStage] = useState<AppStage>("upload");
   const [videoMeta, setVideoMeta] = useState<VideoMeta | null>(null);
   // ── Lifted export options ──────────────────────────────────────────────────

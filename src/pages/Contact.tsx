@@ -1,5 +1,5 @@
 import PageLayout from "../../components/landing/page-layout";
-
+import { useCanonical } from "../hooks/use-canonical";
 const CONTACT = {
   email: "dhriticodes20@gmail.com",
   github: "https://github.com/dhritich20baruah",
@@ -7,6 +7,7 @@ const CONTACT = {
 };
 
 export default function Contact() {
+  useCanonical("/contact");
   return (
     <PageLayout
       title="Contact"

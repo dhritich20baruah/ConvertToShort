@@ -1,8 +1,13 @@
 import { Link } from "react-router-dom";
 import ThemeToggle from "../../components/ui/theme-toggle";
 import Footer from "../../components/landing/Footer";
+import { useEffect } from "react";
 
 export default function NotFound() {
+  useEffect(() => {
+    const tag = document.querySelector("link[rel='canonical']");
+    if (tag) tag.remove();
+  }, []);
   return (
     <div className="min-h-screen flex flex-col bg-canvas">
 

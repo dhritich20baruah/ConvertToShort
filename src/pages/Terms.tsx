@@ -1,6 +1,8 @@
 import PageLayout from "../../components/landing/page-layout";
+import { useCanonical } from "../hooks/use-canonical";
 
 export default function Terms() {
+  useCanonical("/terms");
   return (
     <PageLayout
       title="Terms of Service"
