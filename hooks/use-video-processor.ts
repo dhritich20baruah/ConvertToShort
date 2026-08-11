@@ -243,6 +243,14 @@ export function useVideoProcessor(): UseVideoProcessorResult {
       setOutputBlob(blob);
       setProgress(100);
       setStatus("done");
+      if (typeof window !== "undefined" && (window as any).gtag) {
+        (window as any).gtag("event", "export_complete", {
+          crop_mode: options.cropMode,
+          quality: options.quality,
+          has_text_overlay: options.textOverlay.enabled,
+          clip_duration: (options.trimEnd - options.trimStart).toFixed(1),
+        });
+      }
     } catch (err) {
       console.error("FFmpeg error:", err);
       if (!cancelledRef.current) {
