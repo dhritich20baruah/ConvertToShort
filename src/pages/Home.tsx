@@ -39,6 +39,7 @@ export default function Home() {
     progress,
     outputBlob,
     errorMessage,
+    elapsedTime,
     start,
     cancel,
     reset: resetProcessor,
@@ -206,6 +207,11 @@ export default function Home() {
               <h2 className="text-[22px] font-bold text-ink tracking-tight mb-1.5">
                 Your Short is ready
               </h2>
+              {elapsedTime && (
+                <p className="text-[12px] text-faint font-mono">
+                  Processed in {elapsedTime}s
+                </p>
+              )}
               <p className="text-sm text-body">
                 Download and upload directly to YouTube Shorts.
               </p>

@@ -15,6 +15,7 @@ export type UseVideoProcessorResult = {
   progress: number;
   outputBlob: Blob | null;
   errorMessage: string | null;
+  elapsedTime: string | null;
   start: (meta: VideoMeta, options: ExportOptions) => void;
   cancel: () => void;
   reset: () => void;
@@ -69,6 +70,7 @@ export function useVideoProcessor(): UseVideoProcessorResult {
   const [progress, setProgress] = useState(0);
   const [outputBlob, setOutputBlob] = useState<Blob | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [elapsedTime, setElapsedTime] = useState<string | null>(null);
   const ffmpegRef = useRef<any>(null);
   const cancelledRef = useRef(false);
 
@@ -78,6 +80,8 @@ export function useVideoProcessor(): UseVideoProcessorResult {
     setProgress(0);
     setOutputBlob(null);
     setErrorMessage(null);
+
+    const startTime = Date.now();
 
     try {
       const { FFmpeg } = await import("@ffmpeg/ffmpeg");
@@ -127,6 +131,8 @@ export function useVideoProcessor(): UseVideoProcessorResult {
         Math.min(Math.max(cropX * sourceWidth, 0), maxX),
       );
       const crf = quality === "high" ? "18" : "23";
+      const outputWidth = quality === "high" ? 1080 : 720;
+      const outputHeight = quality === "high" ? 1920 : 1280;
       const drawtextFilter = buildDrawtextFilter(textOverlay);
 
       let args: string[];
@@ -144,8 +150,8 @@ export function useVideoProcessor(): UseVideoProcessorResult {
               `[overlaid]${drawtextFilter}[v]`,
             ].join(";")
           : [
-              `[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=20:5,setsar=1[bg]`,
-              `[0:v]scale=1080:-2,setsar=1[fg]`,
+              `[0:v]scale=${outputWidth}:${outputHeight}:force_original_aspect_ratio=increase,crop=${outputWidth}:${outputHeight},boxblur=20:5,setsar=1[bg]`,
+              `[0:v]scale=${outputWidth}:-2,setsar=1[fg]`,
               `[bg][fg]overlay=0:${innerY}[v]`,
             ].join(";");
 
@@ -156,6 +162,8 @@ export function useVideoProcessor(): UseVideoProcessorResult {
           trimEnd.toFixed(3),
           "-i",
           "input.mp4",
+          "-threads",
+          "4",
           "-filter_complex",
           vf,
           "-map",
@@ -165,7 +173,9 @@ export function useVideoProcessor(): UseVideoProcessorResult {
           "-c:v",
           "libx264",
           "-preset",
-          "fast",
+          "ultrafast",
+          "-tune",
+          "fastdecode",
           "-crf",
           crf,
           "-c:a",
@@ -180,7 +190,7 @@ export function useVideoProcessor(): UseVideoProcessorResult {
       } else {
         // Center crop — append drawtext to -vf chain if present
         const vfFilters = [
-          `crop=${cropWidth}:${cropHeight}:${cropXPx}:0,scale=1080:1920,setsar=1`,
+          `crop=${cropWidth}:${cropHeight}:${cropXPx}:0,scale=${outputWidth}:${outputHeight},setsar=1`,
           drawtextFilter,
         ]
           .filter(Boolean)
@@ -193,12 +203,16 @@ export function useVideoProcessor(): UseVideoProcessorResult {
           trimEnd.toFixed(3),
           "-i",
           "input.mp4",
+          "-threads",
+          "4",
           "-vf",
           vfFilters,
           "-c:v",
           "libx264",
           "-preset",
-          "fast",
+          "ultrafast",
+          "-tune",
+          "fastdecode",
           "-crf",
           crf,
           "-c:a",
@@ -240,6 +254,9 @@ export function useVideoProcessor(): UseVideoProcessorResult {
 
       if (cancelledRef.current) return;
 
+      const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+      console.log(`Export completed in ${elapsed}s`);
+      setElapsedTime(elapsed);
       setOutputBlob(blob);
       setProgress(100);
       setStatus("done");
@@ -263,6 +280,7 @@ export function useVideoProcessor(): UseVideoProcessorResult {
   const cancel = useCallback(() => {
     cancelledRef.current = true;
     ffmpegRef.current = null;
+    setElapsedTime(null);
     setStatus("idle");
     setProgress(0);
   }, []);
@@ -274,7 +292,8 @@ export function useVideoProcessor(): UseVideoProcessorResult {
     setProgress(0);
     setOutputBlob(null);
     setErrorMessage(null);
+    setElapsedTime(null);
   }, []);
 
-  return { status, progress, outputBlob, errorMessage, start, cancel, reset };
+  return { status, progress, outputBlob, errorMessage, elapsedTime, start, cancel, reset };
 }

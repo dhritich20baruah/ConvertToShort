@@ -201,6 +201,8 @@ export default function ProgressOverlay({ progress, onCancel }: Props) {
             <p className="text-[11px] text-faint text-center leading-relaxed">
               Processing happens in your browser.
               <br />
+              Expect roughly 5-6× the clip duration.
+              <br />
               Keep this tab open until it finishes.
             </p>
             <button
