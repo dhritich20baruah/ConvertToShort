@@ -130,7 +130,7 @@ export function useVideoProcessor(): UseVideoProcessorResult {
       const cropXPx = Math.round(
         Math.min(Math.max(cropX * sourceWidth, 0), maxX),
       );
-      const crf = quality === "high" ? "18" : "23";
+      const crf = quality === "high" ? "23" : "28";
       const outputWidth = quality === "high" ? 1080 : 720;
       const outputHeight = quality === "high" ? 1920 : 1280;
       const drawtextFilter = buildDrawtextFilter(textOverlay);
