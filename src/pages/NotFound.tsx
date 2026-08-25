@@ -5,8 +5,24 @@ import { useEffect } from "react";
 
 export default function NotFound() {
   useEffect(() => {
-    const tag = document.querySelector("link[rel='canonical']");
-    if (tag) tag.remove();
+    // Set canonical to homepage for 404 pages
+    const tag = document.querySelector<HTMLLinkElement>("link[rel='canonical']");
+    if (tag) tag.setAttribute("href", "https://converttoshorts.com/");
+
+    // Also add noindex so Google doesn't try to index 404 pages
+    let meta = document.querySelector<HTMLMetaElement>("meta[name='robots']");
+    if (!meta) {
+      meta = document.createElement("meta");
+      meta.setAttribute("name", "robots");
+      document.head.appendChild(meta);
+    }
+    meta.setAttribute("content", "noindex, nofollow");
+
+    return () => {
+      // Restore robots tag when leaving 404 page
+      const robotsMeta = document.querySelector<HTMLMetaElement>("meta[name='robots']");
+      if (robotsMeta) robotsMeta.setAttribute("content", "index, follow");
+    };
   }, []);
   return (
     <div className="min-h-screen flex flex-col bg-canvas">
