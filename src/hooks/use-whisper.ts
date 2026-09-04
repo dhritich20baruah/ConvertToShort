@@ -39,7 +39,10 @@ export function useWhisper(): UseWhisperResult {
         //load whisper model
         setStatus("loading-model");
 
-        const { pipeline, env } = await import("@xenova/transformers");
+        const { pipeline, env } = await import(
+          /* @vite-ignore */
+          "https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2/dist/transformers.min.js"
+        );
         //use local cache - mode downloads and is cached
         env.allowLocalModels = false;
         env.useBrowserCache = true;
