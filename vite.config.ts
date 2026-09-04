@@ -15,11 +15,19 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    exclude: ["@ffmpeg/ffmpeg", "@ffmpeg/util", "@ffmpeg/core"],
+    exclude: ["@ffmpeg/ffmpeg", "@ffmpeg/util", "@xenova/transformers"],
   },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+  },
+  build: {
+    rollupOptions: {
+      external: [],
+    },
+  },
+  worker: {
+    format: "es",
   },
 });
