@@ -1,5 +1,5 @@
 import React from 'react';
-import type { CropMode, Quality, TextOverlay, TextColor, TextPosition, TextSize, AutoCaption, CaptionSegment } from "../../lib/types";
+import type { CropMode, Quality, TextOverlay, TextColor, TextPosition, TextSize, AutoCaption } from "../../lib/types";
 import type { WhisperStatus } from '../../src/hooks/use-whisper';
 
 type Props = {
@@ -514,7 +514,7 @@ export default function ExportPanel({ onExport,
 
       <Divider />
       {/* Output info */}
-      <div className="flex flex-col gap-1 5">
+      <div className="flex flex-col gap-1.5">
         <p className="text-[12px] font-medium text-mute uppercase tracking-widest">
           Output
         </p>
