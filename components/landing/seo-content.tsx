@@ -26,8 +26,8 @@ export default function SeoContent() {
             },
             {
               step: "4",
-              title: "Add text and export",
-              body: "Optionally add a text overlay, then click Export Short to download a clean 1080×1920 MP4.",
+              title: "Add captions or text and export",
+              body: "Generate automatic captions powered by Whisper AI, add a text overlay, then click Export Short to download a clean 1080×1920 MP4.",
             },
           ].map(({ step, title, body }) => (
             <div
@@ -51,6 +51,18 @@ export default function SeoContent() {
         </h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {[
+            {
+              title: "Auto captions powered by Whisper AI",
+              body: "Generate accurate captions automatically from your video's speech. Whisper AI runs entirely in your browser — your audio never leaves your device. The model downloads once (~75MB) and is cached for instant use afterwards. Captions are timed and burned directly into the exported Short.",
+              icon: (
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <path d="M9 2a4 4 0 0 1 4 4v3a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z" stroke="currentColor" strokeWidth="1.5" />
+                  <path d="M3 9a6 6 0 0 0 12 0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  <line x1="9" y1="15" x2="9" y2="17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  <line x1="6" y1="17" x2="12" y2="17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+              ),
+            },
             {
               title: "Trim clips from longer videos",
               body: "Upload videos up to 10 minutes long and use the dual-handle trim bar to select exactly the clip you want. The selected duration is shown in real time so you can nail the perfect cut.",
@@ -203,6 +215,14 @@ export default function SeoContent() {
               q: "How long can my source video be?",
               a: "Convert to Shorts accepts source videos up to 10 minutes long and up to 1080p resolution. Use the trim bar to select the clip you want to export as a Short. YouTube Shorts themselves support videos up to 3 minutes, but the most effective Shorts are typically under 60 seconds.",
             },
+            {
+              q: "Can Convert to Shorts automatically add captions to my YouTube Short?",
+              a: "Yes. Enable Auto Captions in the export panel and click Generate Captions. The tool uses Whisper AI running locally in your browser to transcribe your video's speech and generate timed captions. No audio is sent to any server. The captions are automatically timed and burned into the exported Short — no extra editing needed.",
+            },
+            {
+              q: "Is the auto caption feature free?",
+              a: "Yes, completely free. Whisper AI runs locally in your browser via WebAssembly so there are no API calls or per-transcription costs. The Whisper model (~75MB) downloads once on first use and is cached by your browser — subsequent uses are instant with no download needed.",
+            },
           ].map(({ q, a }, i) => (
             <FaqItem key={i} question={q} answer={a} />
           ))}
@@ -214,8 +234,8 @@ export default function SeoContent() {
         <h2 className="text-[22px] font-bold text-ink tracking-tight">
           Ready to convert your video to a Short?
         </h2>
-        <p className="text-[14px] text-body max-w-120 leading-relaxed">
-          Trim, crop, add text, and export — free, instant, and completely private.
+        <p className="text-[14px] text-body max-w-[480px] leading-relaxed">
+          Auto captions, trim, crop, add text, and export — free, instant, and completely private.
           No upload, no account, no watermark.
         </p>
         <button

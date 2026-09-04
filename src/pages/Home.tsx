@@ -10,6 +10,8 @@ import type { VideoMeta } from "../../lib/types";
 import SeoContent from "../../components/landing/seo-content";
 import Footer from "../../components/landing/Footer";
 import { useCanonical } from "../hooks/use-canonical";
+import { useWhisper } from "../hooks/use-whisper";
+import type { AutoCaption } from "../../lib/types";
 
 export type AppStage = "upload" | "crop" | "processing" | "done" | "error";
 
@@ -32,6 +34,13 @@ export default function Home() {
     color: "white",
     size: "medium",
   });
+  const [autoCaption, setAutoCaption] = useState<AutoCaption>({
+    enabled: false,
+    generated: false,
+    segments: [],
+    color: "white",
+    size: "medium",
+  });
 
   // ── Processor hook ─────────────────────────────────────────────────────────
   const {
@@ -44,6 +53,16 @@ export default function Home() {
     cancel,
     reset: resetProcessor,
   } = useVideoProcessor();
+
+  const {
+    status: whisperStatus,
+    modelProgress: whisperModelProgress,
+    transcribeProgress: whisperTranscribeProgress,
+    segments: whisperSegments,
+    errorMessage: whisperError,
+    transcribe,
+    reset: resetWhisper,
+  } = useWhisper();
 
   // ── Sync processor status → app stage ─────────────────────────────────────
   useEffect(() => {
@@ -82,6 +101,7 @@ export default function Home() {
       trimStart,
       trimEnd,
       textOverlay,
+      autoCaption,
     });
   }
 
@@ -99,8 +119,6 @@ export default function Home() {
     setQuality("high");
     setTrimStart(0);
     setTrimEnd(0);
-    resetProcessor();
-    setStage("upload");
     setTextOverlay({
       enabled: false,
       text: "",
@@ -108,7 +126,32 @@ export default function Home() {
       color: "white",
       size: "medium",
     });
+    setAutoCaption({
+      enabled: false,
+      generated: false,
+      segments: [],
+      color: "white",
+      size: "medium",
+    });
+    resetWhisper();
+    resetProcessor();
+    setStage("upload");
   }
+
+  async function handleGenerateCaptions() {
+    if (!videoMeta) return;
+    await transcribe(videoMeta.file, trimStart, trimEnd);
+  }
+
+  useEffect(() => {
+    if (whisperStatus === "done" && whisperSegments.length > 0) {
+      setAutoCaption((prev) => ({
+        ...prev,
+        generated: true,
+        segments: whisperSegments,
+      }));
+    }
+  }, [whisperStatus, whisperSegments]);
 
   return (
     <div className="min-h-screen flex flex-col bg-canvas">
@@ -185,6 +228,13 @@ export default function Home() {
               trimEnd={trimEnd}
               textOverlay={textOverlay}
               onTextOverlayChange={setTextOverlay}
+              autoCaption={autoCaption}
+              onAutoCaptionChange={setAutoCaption}
+              whisperStatus={whisperStatus}
+              whisperModelProgress={whisperModelProgress}
+              whisperTranscribeProgress={whisperTranscribeProgress}
+              whisperError={whisperError}
+              onGenerateCaptions={handleGenerateCaptions}
             />
           </div>
         )}

@@ -1,5 +1,6 @@
 import React from 'react';
-import type { CropMode, Quality, TextOverlay, TextColor, TextPosition, TextSize } from "../../lib/types";
+import type { CropMode, Quality, TextOverlay, TextColor, TextPosition, TextSize, AutoCaption, CaptionSegment } from "../../lib/types";
+import type { WhisperStatus } from '../../src/hooks/use-whisper';
 
 type Props = {
   onExport: () => void;
@@ -11,6 +12,13 @@ type Props = {
   trimEnd: number;
   textOverlay: TextOverlay;
   onTextOverlayChange: (overlay: TextOverlay) => void;
+  autoCaption: AutoCaption;
+  onAutoCaptionChange: (caption: AutoCaption) => void;
+  whisperStatus: WhisperStatus;
+  whisperModelProgress: number;
+  whisperTranscribeProgress: number;
+  whisperError: string | null;
+  onGenerateCaptions: () => void;
 };
 
 export default function ExportPanel({ onExport,
@@ -21,13 +29,27 @@ export default function ExportPanel({ onExport,
   trimStart,
   trimEnd,
   textOverlay,
-  onTextOverlayChange, }: Props) {
+  onTextOverlayChange,
+  autoCaption,
+  onAutoCaptionChange,
+  whisperStatus,
+  whisperModelProgress,
+  whisperTranscribeProgress,
+  whisperError,
+  onGenerateCaptions }: Props) {
 
   function updateOverlay<K extends keyof TextOverlay>(
     key: K,
     value: TextOverlay[K]
   ) {
     onTextOverlayChange({ ...textOverlay, [key]: value });
+  }
+
+  function updateCaption<K extends keyof AutoCaption>(
+    key: K,
+    value: AutoCaption[K]
+  ) {
+    onAutoCaptionChange({ ...autoCaption, [key]: value });
   }
 
   const clipDuration = trimEnd - trimStart;
@@ -158,16 +180,31 @@ export default function ExportPanel({ onExport,
 
       {/* Text overlay */}
       <div className="flex flex-col gap-3">
+        {/* Text overlay header */}
         <div className="flex items-center justify-between">
-          <p className="text-[12px] font-medium text-mute uppercase tracking-widest">
-            Text overlay
-          </p>
+          <div className="flex flex-col gap-0.5">
+            <p className="text-[12px] font-medium text-mute uppercase tracking-widest">
+              Text overlay
+            </p>
+            {autoCaption.enabled && (
+              <p className="text-[10px] text-faint">
+                Disabled while auto captions are on
+              </p>
+            )}
+          </div>
+
           {/* Toggle */}
           <button
-            onClick={() => updateOverlay("enabled", !textOverlay.enabled)}
+            onClick={() => {
+              if (autoCaption.enabled) return;
+              updateOverlay("enabled", !textOverlay.enabled);
+            }}
             className={[
-              "w-10 h-5 rounded-pill border transition-colors duration-150 relative",
-              textOverlay.enabled
+              "w-10 h-5 rounded-pill border transition-colors duration-150 relative shrink-0",
+              autoCaption.enabled
+                ? "opacity-40 cursor-not-allowed"
+                : "",
+              textOverlay.enabled && !autoCaption.enabled
                 ? "bg-accent border-accent"
                 : "bg-canvas border-hairline",
             ].join(" ")}
@@ -176,7 +213,9 @@ export default function ExportPanel({ onExport,
             <div
               className={[
                 "absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform duration-150",
-                textOverlay.enabled ? "translate-x-5" : "translate-x-0.5",
+                textOverlay.enabled && !autoCaption.enabled
+                  ? "translate-x-5"
+                  : "translate-x-0.5",
               ].join(" ")}
             />
           </button>
@@ -273,6 +312,206 @@ export default function ExportPanel({ onExport,
           </div>
         )}
       </div>
+
+      <Divider />
+
+      {/* Auto captions */}
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center justify-between">
+          <p className="text-[12px] font-medium text-mute uppercase tracking-widest">
+            Auto captions
+          </p>
+          <button
+            onClick={() => {
+              const next = !autoCaption.enabled;
+              onAutoCaptionChange({
+                ...autoCaption,
+                enabled: next,
+              });
+              // Disable text overlay when captions are enabled
+              if (next && textOverlay.enabled) {
+                onTextOverlayChange({ ...textOverlay, enabled: false });
+              }
+            }}
+            className={[
+              "w-10 h-5 rounded-pill border transition-colors duration-150 relative",
+              autoCaption.enabled
+                ? "bg-accent border-accent"
+                : "bg-canvas border-hairline",
+            ].join(" ")}
+            aria-label="Toggle auto captions"
+          >
+            <div
+              className={[
+                "absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform duration-150",
+                autoCaption.enabled ? "translate-x-5" : "translate-x-0.5",
+              ].join(" ")}
+            />
+          </button>
+        </div>
+
+        {autoCaption.enabled && (
+          <div className="flex flex-col gap-3">
+
+            {/* Privacy note */}
+            <div className="flex items-start gap-2 p-3 rounded-sm bg-accent/5 border border-accent/20">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="none"
+                className="text-accent shrink-0 mt-0.5"
+              >
+                <path
+                  d="M7 1L2 3.5V7C2 9.76 4.24 12.35 7 13C9.76 12.35 12 9.76 12 7V3.5L7 1Z"
+                  stroke="currentColor"
+                  strokeWidth="1.25"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <p className="text-[11px] text-accent leading-relaxed">
+                Powered by Whisper AI — runs entirely in your browser.
+                Audio never leaves your device. First use downloads ~75MB model
+                (cached after that).
+              </p>
+            </div>
+
+            {/* Generate button / status */}
+            {whisperStatus === "idle" || whisperStatus === "error" ? (
+              <div className="flex flex-col gap-2">
+                <button
+                  onClick={onGenerateCaptions}
+                  className="w-full py-2.5 rounded-sm border border-accent bg-accent/5 text-accent text-[13px] font-semibold cursor-pointer hover:bg-accent hover:text-accent-ink transition-colors"
+                >
+                  Generate Captions
+                </button>
+                {whisperError && (
+                  <p className="text-[11px] text-error leading-relaxed">
+                    {whisperError}
+                  </p>
+                )}
+              </div>
+            ) : whisperStatus === "loading-model" ? (
+              <WhisperProgress
+                label="Downloading Whisper model…"
+                sub="One-time download, cached after this"
+                progress={whisperModelProgress}
+              />
+            ) : whisperStatus === "extracting-audio" ? (
+              <WhisperProgress
+                label="Extracting audio…"
+                sub="Reading audio track from video"
+                progress={100}
+                indeterminate
+              />
+            ) : whisperStatus === "transcribing" ? (
+              <WhisperProgress
+                label="Transcribing speech…"
+                sub="Whisper AI is processing your audio"
+                progress={whisperTranscribeProgress}
+              />
+            ) : whisperStatus === "done" && autoCaption.generated ? (
+              <div className="flex flex-col gap-3">
+
+                {/* Success + segment count */}
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-5 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
+                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                      <path
+                        d="M2 5L4 7L8 3"
+                        stroke="var(--color-accent)"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </div>
+                  <p className="text-[12px] text-ink font-medium">
+                    {autoCaption.segments.length} caption segments generated
+                  </p>
+                  <button
+                    onClick={onGenerateCaptions}
+                    className="ml-auto text-[11px] text-mute hover:text-ink transition-colors bg-transparent border-none cursor-pointer"
+                  >
+                    Regenerate
+                  </button>
+                </div>
+
+                {/* Caption preview */}
+                <div className="flex flex-col gap-1 max-h-32 overflow-y-auto rounded-sm border border-hairline bg-canvas p-2">
+                  {autoCaption.segments.map((seg, i) => (
+                    <div key={i} className="flex items-start gap-2">
+                      <span className="text-[10px] font-mono text-faint shrink-0 mt-0.5">
+                        {formatTime(seg.start)}
+                      </span>
+                      <span className="text-[11px] text-body leading-relaxed">
+                        {seg.text}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Caption style */}
+                <div className="flex flex-col gap-2">
+                  <p className="text-[11px] font-medium text-mute uppercase tracking-widest">
+                    Caption color
+                  </p>
+                  <div className="flex gap-2">
+                    {([
+                      { value: "white", bg: "#ffffff", border: "#e0e0e0" },
+                      { value: "black", bg: "#000000", border: "#000000" },
+                      { value: "yellow", bg: "#facc15", border: "#facc15" },
+                    ] as { value: TextColor; bg: string; border: string }[]).map(
+                      ({ value, bg, border }) => (
+                        <button
+                          key={value}
+                          onClick={() => updateCaption("color", value)}
+                          aria-label={value}
+                          className={[
+                            "w-8 h-8 rounded-sm border-2 cursor-pointer transition-all",
+                            autoCaption.color === value
+                              ? "border-accent scale-110"
+                              : "border-transparent hover:border-hairline",
+                          ].join(" ")}
+                          style={{
+                            backgroundColor: bg,
+                            outline: `1px solid ${border}`,
+                          }}
+                        />
+                      )
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <p className="text-[11px] font-medium text-mute uppercase tracking-widest">
+                    Caption size
+                  </p>
+                  <div className="flex gap-2">
+                    {(["small", "medium", "large"] as TextSize[]).map((s) => (
+                      <button
+                        key={s}
+                        onClick={() => updateCaption("size", s)}
+                        className={[
+                          "flex-1 py-1.5 rounded-sm border text-[12px] font-medium cursor-pointer transition-colors capitalize",
+                          autoCaption.size === s
+                            ? "border-accent bg-accent/10 text-accent"
+                            : "border-hairline bg-canvas text-mute hover:border-accent/50",
+                        ].join(" ")}
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+            ) : null}
+
+          </div>
+        )}
+      </div>
+
       <Divider />
       {/* Output info */}
       <div className="flex flex-col gap-1 5">
@@ -297,6 +536,12 @@ export default function ExportPanel({ onExport,
           />
           {textOverlay.enabled && textOverlay.text.trim() && (
             <InfoRow label="Text" value={`"${textOverlay.text.slice(0, 20)}${textOverlay.text.length > 20 ? "…" : ""}"`} />
+          )}
+          {autoCaption.enabled && autoCaption.generated && (
+            <InfoRow
+              label="Captions"
+              value={`${autoCaption.segments.length} segments`}
+            />
           )}
         </div>
       </div>
@@ -451,4 +696,44 @@ function QualityButton({
       <span className="text-[11px] text-mute font-mono">{sub}</span>
     </button>
   );
+}
+
+function WhisperProgress({
+  label,
+  sub,
+  progress,
+  indeterminate = false,
+}: {
+  label: string;
+  sub: string;
+  progress: number;
+  indeterminate?: boolean;
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center justify-between">
+        <p className="text-[12px] font-medium text-ink">{label}</p>
+        {!indeterminate && (
+          <p className="text-[11px] font-mono text-mute">{progress}%</p>
+        )}
+      </div>
+      <div className="w-full h-1.5 rounded-pill bg-hairline overflow-hidden">
+        {indeterminate ? (
+          <div className="h-full w-1/3 rounded-pill bg-accent animate-pulse" />
+        ) : (
+          <div
+            className="h-full rounded-pill bg-accent transition-all duration-300"
+            style={{ width: `${progress}%` }}
+          />
+        )}
+      </div>
+      <p className="text-[11px] text-faint">{sub}</p>
+    </div>
+  );
+}
+
+function formatTime(s: number): string {
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  return `${m}:${sec.toString().padStart(2, "0")}`;
 }
