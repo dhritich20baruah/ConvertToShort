@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import ThemeToggle from "../ui/theme-toggle";
 import Footer from "./Footer";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "../../components/ui/language-switcher";
 
 type Props = {
   title: string;
@@ -9,6 +11,8 @@ type Props = {
 };
 
 export default function PageLayout({ title, description, children }: Props) {
+  const { t } = useTranslation();
+
   return (
     <div className="min-h-screen flex flex-col bg-canvas">
 
@@ -27,20 +31,23 @@ export default function PageLayout({ title, description, children }: Props) {
             </svg>
           </div>
           <span className="text-[15px] font-semibold text-ink tracking-tight">
-            Convert to Shorts
+            {t("nav.brand")}
           </span>
         </Link>
-        <ThemeToggle />
+        <div className="flex items-center gap-3">
+          <LanguageSwitcher />
+          <ThemeToggle />
+        </div>
       </header>
 
       {/* Page header */}
       <div className="border-b border-hairline bg-canvas-elevated">
-        <div className="max-w-215 mx-auto px-6 py-10">
+        <div className="max-w-[860px] mx-auto px-6 py-10">
           <h1 className="text-[28px] font-bold text-ink tracking-tight leading-tight mb-2">
             {title}
           </h1>
           {description && (
-            <p className="text-[15px] text-body leading-relaxed max-w-140">
+            <p className="text-[15px] text-body leading-relaxed max-w-[560px]">
               {description}
             </p>
           )}
@@ -49,7 +56,7 @@ export default function PageLayout({ title, description, children }: Props) {
 
       {/* Content */}
       <main className="flex-1">
-        <div className="max-w-215 mx-auto px-6 py-12">
+        <div className="max-w-[860px] mx-auto px-6 py-12">
           {children}
         </div>
       </main>

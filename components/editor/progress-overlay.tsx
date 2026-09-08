@@ -1,35 +1,38 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   progress: number;
   onCancel: () => void;
-}
-
-const STAGES = [
-  { until: 15, label: "Reading video..." },
-  { until: 40, label: "Decoding frames…" },
-  { until: 80, label: "Reframing to 9:16…" },
-  { until: 95, label: "Encoding output…" },
-  { until: 100, label: "Wrapping up…" },
-];
-
-function getStageLabel(progress: number) {
-  for (const stage of STAGES) {
-    if (progress <= stage.until) return stage.label;
-  }
-  return "Wrapping up...";
-}
+};
 
 export default function ProgressOverlay({ progress, onCancel }: Props) {
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const t = setTimeout(() => setVisible(true), 80);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setVisible(true), 80);
+    return () => clearTimeout(timer);
   }, []);
 
-  const label = getStageLabel(progress);
   const isDone = progress >= 100;
+
+  const STAGES = [
+    { until: 15, label: t("progress.reading") },
+    { until: 40, label: t("progress.decoding") },
+    { until: 80, label: t("progress.reframing") },
+    { until: 95, label: t("progress.encoding") },
+    { until: 100, label: t("progress.wrapping") },
+  ];
+
+  function getStageLabel(p: number) {
+    for (const stage of STAGES) {
+      if (p <= stage.until) return stage.label;
+    }
+    return t("progress.wrapping");
+  }
+
+  const label = getStageLabel(progress);
 
   return (
     <div
@@ -47,15 +50,14 @@ export default function ProgressOverlay({ progress, onCancel }: Props) {
         className={[
           "flex flex-col items-center gap-6 p-8 rounded-lg",
           "bg-canvas-elevated border border-hairline",
-          "w-85 shadow-floating",
+          "w-[340px]",
           "transition-transform duration-200",
           visible ? "translate-y-0" : "translate-y-2",
         ].join(" ")}
         style={{ boxShadow: "var(--shadow-floating)" }}
       >
-        {/* Animated icon */}
+        {/* Circular progress ring */}
         <div className="relative w-14 h-14">
-          {/* Track ring */}
           <svg
             className="absolute inset-0 w-full h-full -rotate-90"
             viewBox="0 0 56 56"
@@ -80,8 +82,6 @@ export default function ProgressOverlay({ progress, onCancel }: Props) {
               style={{ transition: "stroke-dashoffset 0.3s ease" }}
             />
           </svg>
-
-          {/* Center content */}
           <div className="absolute inset-0 flex items-center justify-center">
             {isDone ? (
               <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
@@ -101,20 +101,18 @@ export default function ProgressOverlay({ progress, onCancel }: Props) {
           </div>
         </div>
 
-        {/* Stage label + progress bar */}
+        {/* Progress bar + label */}
         <div className="w-full flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <p className="text-[14px] font-medium text-ink">
-              {isDone ? "Done" : label}
+              {isDone ? t("progress.done") : label}
             </p>
             <p className="text-[12px] font-mono text-mute tabular-nums">
               {progress}%
             </p>
           </div>
 
-          {/* Track */}
           <div className="w-full h-1.5 rounded-pill bg-hairline overflow-hidden">
-            {/* Fill */}
             <div
               className="h-full rounded-pill bg-accent"
               style={{
@@ -142,7 +140,7 @@ export default function ProgressOverlay({ progress, onCancel }: Props) {
           </div>
         </div>
 
-        {/* Current stage description */}
+        {/* Stage list */}
         <div className="w-full flex flex-col gap-2">
           {STAGES.map((stage, i) => {
             const prevUntil = i === 0 ? 0 : STAGES[i - 1].until;
@@ -156,15 +154,14 @@ export default function ProgressOverlay({ progress, onCancel }: Props) {
                   isActive ? "opacity-100" : isPast ? "opacity-40" : "opacity-20",
                 ].join(" ")}
               >
-                {/* Step icon */}
                 <div
                   className={[
                     "w-4 h-4 rounded-full border flex items-center justify-center shrink-0 transition-colors duration-200",
                     isPast
                       ? "border-accent bg-accent"
                       : isActive
-                        ? "border-accent bg-transparent"
-                        : "border-hairline bg-transparent",
+                      ? "border-accent bg-transparent"
+                      : "border-hairline bg-transparent",
                   ].join(" ")}
                 >
                   {isPast && (
@@ -199,21 +196,19 @@ export default function ProgressOverlay({ progress, onCancel }: Props) {
         {!isDone && (
           <div className="flex flex-col items-center gap-2">
             <p className="text-[11px] text-faint text-center leading-relaxed">
-              Processing happens in your browser.
+              {t("progress.processingNote")}
               <br />
-              Expect roughly 5-6× the clip duration.
-              <br />
-              Keep this tab open until it finishes.
+              {t("progress.keepTabOpen")}
             </p>
             <button
               onClick={onCancel}
               className="text-[12px] text-mute bg-transparent border-none cursor-pointer hover:text-ink transition-colors"
             >
-              Cancel
+              {t("progress.cancel")}
             </button>
           </div>
         )}
       </div>
     </div>
-  )
+  );
 }

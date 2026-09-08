@@ -1,6 +1,7 @@
 import type { VideoMeta } from '../../lib/types';
 import React from 'react'
 import { useRef, useState, useCallback } from 'react';
+import { useTranslation } from "react-i18next";
 
 const MAX_DURATION = 600;
 const MAX_WIDTH = 1920;
@@ -14,6 +15,7 @@ type Props = {
 type DropState = "idle" | "dragging" | "error";
 
 export default function UploadDropzone({ onFileAccepted }: Props) {
+  const { t } = useTranslation();
   const [dropState, setDropState] = useState<DropState>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -30,7 +32,7 @@ export default function UploadDropzone({ onFileAccepted }: Props) {
 
       if (!ACCEPTED_TYPES.includes(file.type)) {
         setDropState("error");
-        setErrorMessage("Only MP4 and MOV files are supported");
+        setErrorMessage(t("upload.errors.type"));
         return;
       }
 
@@ -49,7 +51,7 @@ export default function UploadDropzone({ onFileAccepted }: Props) {
           setLoading(false);
           setDropState("error");
           setErrorMessage(
-            `Video is ${Math.round(duration)}s — max allowed is 10 minutes.`
+            t("upload.errors.duration", { duration: Math.round(duration) })
           );
           return;
         }
@@ -59,7 +61,7 @@ export default function UploadDropzone({ onFileAccepted }: Props) {
           setLoading(false);
           setDropState("error");
           setErrorMessage(
-            `Resolution ${width}×${height} exceeds the 1920×1080 limit.`
+            t("upload.errors.resolution", { width, height })
           );
           return;
         }
@@ -72,10 +74,10 @@ export default function UploadDropzone({ onFileAccepted }: Props) {
         URL.revokeObjectURL(url);
         setLoading(false);
         setDropState("error");
-        setErrorMessage("Could not read this file. Try a different video.");
+        setErrorMessage(t("upload.errors.read"));
       };
     },
-    [onFileAccepted]
+    [onFileAccepted, t]
   );
 
   // Drag handlers
@@ -85,7 +87,6 @@ export default function UploadDropzone({ onFileAccepted }: Props) {
   }
 
   function onDragLeave(e: React.DragEvent) {
-    // Only reset if leaving the dropzone entirely, not a child element
     if (!e.currentTarget.contains(e.relatedTarget as Node)) {
       setDropState("idle");
     }
@@ -101,7 +102,6 @@ export default function UploadDropzone({ onFileAccepted }: Props) {
   function onInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (file) processFile(file);
-    // Reset input so same file can be re-selected after an error
     e.target.value = "";
   }
 
@@ -193,7 +193,7 @@ export default function UploadDropzone({ onFileAccepted }: Props) {
         <div className="flex flex-col gap-1">
           {loading ? (
             <p className="text-[15px] font-medium text-body">
-              Reading video…
+              {t("upload.dropzone.loading")}
             </p>
           ) : isError ? (
             <>
@@ -201,23 +201,20 @@ export default function UploadDropzone({ onFileAccepted }: Props) {
                 {errorMessage}
               </p>
               <p className="text-[13px] text-mute">
-                Click to try a different file
+                {t("upload.errors.retry")}
               </p>
             </>
           ) : isDragging ? (
             <p className="text-[15px] font-medium text-accent">
-              Drop to load video
+              {t("upload.dropzone.dragging")}
             </p>
           ) : (
             <>
               <p className="text-[15px] font-medium text-ink">
-                Drop your video here
+                {t("upload.dropzone.idle_title")}
               </p>
               <p className="text-[13px] text-mute">
-                or{" "}
-                <span className="text-accent underline underline-offset-2">
-                  browse files
-                </span>
+                {t("upload.dropzone.idle_sub")}
               </p>
             </>
           )}

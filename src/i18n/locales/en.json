@@ -1,0 +1,144 @@
+{
+  "nav": {
+    "brand": "Convert to Shorts",
+    "startOver": "Start over"
+  },
+  "upload": {
+    "heading": "Reframe video for YouTube Shorts",
+    "subheading": "Crop horizontal video into 9:16 format right in your browser. Nothing is uploaded — your video never leaves your device.",
+    "dropzone": {
+      "idle_title": "Drop your video here",
+      "idle_sub": "or browse files",
+      "dragging": "Drop to load video",
+      "loading": "Reading video…",
+      "hint": "MP4 or MOV · Up to 10 minutes · Up to 1080p"
+    },
+    "errors": {
+      "type": "Only MP4 and MOV files are supported.",
+      "duration": "Video is {{duration}}s — max allowed is 10 minutes.",
+      "resolution": "Resolution {{width}}×{{height}} exceeds the 1920×1080 limit.",
+      "read": "Could not read this file. Try a different video.",
+      "retry": "Click to try a different file"
+    }
+  },
+  "editor": {
+    "cropWindow": "Crop window",
+    "dragToReposition": "Drag the highlighted area to reposition",
+    "trimClip": "Trim clip",
+    "playback": "Playback"
+  },
+  "exportPanel": {
+    "title": "Export settings",
+    "output": "Output: 1080 × 1920 · MP4",
+    "style": "Style",
+    "centerCrop": "Center crop",
+    "centerCropDesc": "Trims the sides, keeps the middle.",
+    "blurLetterbox": "Blur letterbox",
+    "blurLetterboxDesc": "Full frame centered, blurred background fills top and bottom.",
+    "quality": "Quality",
+    "high": "High",
+    "medium": "Medium",
+    "highDesc": "Best for uploading to YouTube directly.",
+    "mediumDesc": "Smaller file size, good for sharing.",
+    "textOverlay": "Text overlay",
+    "textOverlayDisabled": "Disabled while auto captions are on",
+    "textPlaceholder": "Enter your text…",
+    "position": "Position",
+    "top": "Top",
+    "center": "Center",
+    "bottom": "Bottom",
+    "color": "Color",
+    "size": "Size",
+    "small": "Small",
+    "large": "Large",
+    "autoCaptions": "Auto captions",
+    "autoCaptionsPrivacy": "Powered by Whisper AI — runs entirely in your browser. Audio never leaves your device. First use downloads ~75MB model (cached after that).",
+    "generateCaptions": "Generate Captions",
+    "regenerate": "Regenerate",
+    "captionSegments": "{{count}} caption segments generated",
+    "captionColor": "Caption color",
+    "captionSize": "Caption size",
+    "outputSection": "Output",
+    "format": "Format",
+    "resolution": "Resolution",
+    "aspectRatio": "Aspect ratio",
+    "bitrate": "Bitrate",
+    "clipDuration": "Clip duration",
+    "text": "Text",
+    "captions": "Captions",
+    "segments": "{{count}} segments",
+    "privacyNote": "Processed entirely in your browser. Your video is never uploaded or stored anywhere.",
+    "exportButton": "Export Short"
+  },
+  "progress": {
+    "reading": "Reading video…",
+    "decoding": "Decoding frames…",
+    "reframing": "Reframing to 9:16…",
+    "encoding": "Encoding output…",
+    "wrapping": "Wrapping up…",
+    "done": "Done",
+    "processingNote": "Processing happens in your browser.",
+    "keepTabOpen": "Typically 2-4× the clip duration. Keep this tab open until it finishes.",
+    "cancel": "Cancel"
+  },
+  "whisper": {
+    "downloadingModel": "Downloading Whisper model…",
+    "downloadingModelSub": "One-time download, cached after this",
+    "extractingAudio": "Extracting audio…",
+    "extractingAudioSub": "Reading audio track from video",
+    "transcribing": "Transcribing speech…",
+    "transcribingSub": "Whisper AI is processing your audio"
+  },
+  "done": {
+    "title": "Your Short is ready",
+    "subtitle": "Download and upload directly to YouTube Shorts.",
+    "download": "Download MP4",
+    "processedIn": "Processed in {{time}}s",
+    "convertAnother": "Convert another video"
+  },
+  "error": {
+    "title": "Something went wrong",
+    "default": "An unexpected error occurred during processing.",
+    "tryAgain": "Try again"
+  },
+  "footer": {
+    "tagline": "Free YouTube Shorts Converter",
+    "privacy": "Your video never leaves your device",
+    "product": "Product",
+    "legal": "Legal",
+    "convert": "Convert to Shorts",
+    "about": "About",
+    "privacyPolicy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "contact": "Contact"
+  },
+  "pages": {
+    "about": {
+      "title": "About Convert to Shorts",
+      "description": "A free, private, browser-based tool for converting horizontal videos to YouTube Shorts format."
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "lastUpdated": "Last updated: January 2025"
+    },
+    "terms": {
+      "title": "Terms of Service",
+      "lastUpdated": "Last updated: January 2025"
+    },
+    "contact": {
+      "title": "Contact",
+      "description": "Have a question, suggestion, or found a bug? Reach out through any of the channels below."
+    },
+    "notFound": {
+      "title": "Page not found",
+      "subtitle": "The page you're looking for doesn't exist or has been moved.",
+      "goHome": "Go to homepage",
+      "contactUs": "Contact us"
+    }
+  },
+  "languages": {
+    "en": "English",
+    "hi": "हिन्दी",
+    "es": "Español"
+  }
+}

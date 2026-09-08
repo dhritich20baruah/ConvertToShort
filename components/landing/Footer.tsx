@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function Footer() {
+  const { t } = useTranslation();
+
   return (
     <footer className="border-t border-hairline bg-canvas-elevated">
-      <div className="max-w-225 mx-auto px-6 py-10 flex flex-col gap-8">
+      <div className="max-w-[900px] mx-auto px-6 py-10 flex flex-col gap-8">
 
         {/* Top row */}
         <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
@@ -23,12 +26,11 @@ export default function Footer() {
                 </svg>
               </div>
               <span className="text-[14px] font-semibold text-ink tracking-tight">
-                Convert to Shorts
+                {t("nav.brand")}
               </span>
             </div>
-            <p className="text-[12px] text-mute max-w-60 leading-relaxed">
-              Free YouTube Shorts converter. No upload, no login, no watermark.
-              Your video never leaves your device.
+            <p className="text-[12px] text-mute max-w-[240px] leading-relaxed">
+              {t("footer.tagline")}
             </p>
           </div>
 
@@ -36,46 +38,46 @@ export default function Footer() {
           <div className="flex flex-col gap-6 sm:flex-row sm:gap-12">
             <div className="flex flex-col gap-2">
               <p className="text-[11px] font-semibold text-mute uppercase tracking-widest">
-                Product
+                {t("footer.product")}
               </p>
               <div className="flex flex-col gap-1.5">
                 <Link
                   to="/"
                   className="text-[13px] text-body hover:text-ink transition-colors no-underline"
                 >
-                  Convert to Shorts
+                  {t("footer.convert")}
                 </Link>
                 <Link
                   to="/about"
                   className="text-[13px] text-body hover:text-ink transition-colors no-underline"
                 >
-                  About
+                  {t("footer.about")}
                 </Link>
               </div>
             </div>
 
             <div className="flex flex-col gap-2">
               <p className="text-[11px] font-semibold text-mute uppercase tracking-widest">
-                Legal
+                {t("footer.legal")}
               </p>
               <div className="flex flex-col gap-1.5">
                 <Link
                   to="/privacy-policy"
                   className="text-[13px] text-body hover:text-ink transition-colors no-underline"
                 >
-                  Privacy Policy
+                  {t("footer.privacyPolicy")}
                 </Link>
                 <Link
                   to="/terms"
                   className="text-[13px] text-body hover:text-ink transition-colors no-underline"
                 >
-                  Terms of Service
+                  {t("footer.terms")}
                 </Link>
                 <Link
                   to="/contact"
                   className="text-[13px] text-body hover:text-ink transition-colors no-underline"
                 >
-                  Contact
+                  {t("footer.contact")}
                 </Link>
               </div>
             </div>
@@ -88,7 +90,7 @@ export default function Footer() {
         {/* Bottom row */}
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-[12px] text-faint">
-            © {new Date().getFullYear()} ConvertToShorts.com — Free YouTube Shorts Converter
+            © {new Date().getFullYear()} ConvertToShorts.com — {t("footer.tagline")}
           </p>
           <p className="text-[12px] text-faint flex items-center gap-1.5">
             <svg width="12" height="12" viewBox="0 0 14 14" fill="none" className="text-accent">
@@ -99,7 +101,7 @@ export default function Footer() {
                 strokeLinejoin="round"
               />
             </svg>
-            Your video never leaves your device
+            {t("footer.privacy")}
           </p>
         </div>
       </div>

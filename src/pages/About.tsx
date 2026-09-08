@@ -1,16 +1,18 @@
 import PageLayout from "../../components/landing/page-layout";
 import { Link } from "react-router-dom";
 import { useCanonical } from "../hooks/use-canonical";
+import { useTranslation } from "react-i18next";
 
 export default function About() {
+  const { t } = useTranslation();
   useCanonical("/about");
+
   return (
     <PageLayout
-      title="About Convert to Shorts"
-      description="A free, private, browser-based tool for converting horizontal videos to YouTube Shorts format."
+      title={t("pages.about.title")}
+      description={t("pages.about.description")}
     >
-      <div className="flex flex-col gap-10 prose-custom">
-
+      <div className="flex flex-col gap-10">
         <Section title="What is Convert to Shorts?">
           <p>
             Convert to Shorts is a free browser-based tool that converts horizontal
@@ -30,10 +32,9 @@ export default function About() {
             no account is required, and nothing is stored anywhere.
           </p>
           <p>
-            The tool gives you two reframing options: a simple center crop that
-            keeps the middle portion of your frame, and a blur letterbox style that
-            keeps the full original frame visible with a blurred background filling
-            the top and bottom — a popular look on short-form video platforms.
+            Auto captions are powered by <strong>Whisper AI</strong> (via
+            Transformers.js) running locally in your browser — your audio never
+            leaves your device.
           </p>
         </Section>
 
@@ -56,8 +57,7 @@ export default function About() {
             Your video never leaves your device. We do not collect, store, or
             process any video files. We do not use analytics that track individual
             users. The only data we collect is standard web server access logs
-            (IP address, browser type, page visited) which are retained for 30 days
-            for security purposes.
+            retained for 30 days for security purposes.
           </p>
           <p>
             Read our full{" "}
@@ -77,7 +77,6 @@ export default function About() {
             — we read every message.
           </p>
         </Section>
-
       </div>
     </PageLayout>
   );

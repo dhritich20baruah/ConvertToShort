@@ -1,12 +1,14 @@
 import PageLayout from "../../components/landing/page-layout";
 import { useCanonical } from "../hooks/use-canonical";
+import { useTranslation } from "react-i18next";
 
 export default function PrivacyPolicy() {
-useCanonical("/privacy-policy");
+  const { t } = useTranslation();
+  useCanonical("/privacy-policy");
   return (
     <PageLayout
-      title="Privacy Policy"
-      description="Last updated: January 2025"
+      title={t("pages.privacy.title")}
+      description={t("pages.privacy.lastUpdated")}
     >
       <div className="flex flex-col gap-10">
 

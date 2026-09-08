@@ -1,0 +1,144 @@
+{
+  "nav": {
+    "brand": "Convert to Shorts",
+    "startOver": "Empezar de nuevo"
+  },
+  "upload": {
+    "heading": "Reformatea tu vídeo para YouTube Shorts",
+    "subheading": "Recorta vídeos horizontales al formato 9:16 directamente en tu navegador. Nada se sube — tu vídeo nunca sale de tu dispositivo.",
+    "dropzone": {
+      "idle_title": "Suelta tu vídeo aquí",
+      "idle_sub": "o selecciona un archivo",
+      "dragging": "Suelta para cargar el vídeo",
+      "loading": "Leyendo vídeo…",
+      "hint": "MP4 o MOV · Hasta 10 minutos · Hasta 1080p"
+    },
+    "errors": {
+      "type": "Solo se admiten archivos MP4 y MOV.",
+      "duration": "El vídeo dura {{duration}}s — el máximo permitido es 10 minutos.",
+      "resolution": "La resolución {{width}}×{{height}} supera el límite de 1920×1080.",
+      "read": "No se pudo leer este archivo. Prueba con otro vídeo.",
+      "retry": "Haz clic para elegir otro archivo"
+    }
+  },
+  "editor": {
+    "cropWindow": "Ventana de recorte",
+    "dragToReposition": "Arrastra el área resaltada para reposicionarla",
+    "trimClip": "Recortar clip",
+    "playback": "Reproducción"
+  },
+  "exportPanel": {
+    "title": "Configuración de exportación",
+    "output": "Salida: 1080 × 1920 · MP4",
+    "style": "Estilo",
+    "centerCrop": "Recorte central",
+    "centerCropDesc": "Recorta los lados, mantiene el centro.",
+    "blurLetterbox": "Letterbox difuminado",
+    "blurLetterboxDesc": "Fotograma completo centrado, fondo difuminado arriba y abajo.",
+    "quality": "Calidad",
+    "high": "Alta",
+    "medium": "Media",
+    "highDesc": "Lo mejor para subir directamente a YouTube.",
+    "mediumDesc": "Archivo más pequeño, ideal para compartir.",
+    "textOverlay": "Texto superpuesto",
+    "textOverlayDisabled": "Desactivado mientras los subtítulos automáticos están activos",
+    "textPlaceholder": "Escribe tu texto…",
+    "position": "Posición",
+    "top": "Arriba",
+    "center": "Centro",
+    "bottom": "Abajo",
+    "color": "Color",
+    "size": "Tamaño",
+    "small": "Pequeño",
+    "large": "Grande",
+    "autoCaptions": "Subtítulos automáticos",
+    "autoCaptionsPrivacy": "Funciona con Whisper AI — se ejecuta completamente en tu navegador. El audio nunca sale de tu dispositivo. El primer uso descarga un modelo de ~75MB (luego queda en caché).",
+    "generateCaptions": "Generar subtítulos",
+    "regenerate": "Regenerar",
+    "captionSegments": "{{count}} segmentos de subtítulos generados",
+    "captionColor": "Color de subtítulos",
+    "captionSize": "Tamaño de subtítulos",
+    "outputSection": "Salida",
+    "format": "Formato",
+    "resolution": "Resolución",
+    "aspectRatio": "Relación de aspecto",
+    "bitrate": "Tasa de bits",
+    "clipDuration": "Duración del clip",
+    "text": "Texto",
+    "captions": "Subtítulos",
+    "segments": "{{count}} segmentos",
+    "privacyNote": "Procesado completamente en tu navegador. Tu vídeo nunca se sube ni se almacena en ningún lugar.",
+    "exportButton": "Exportar Short"
+  },
+  "progress": {
+    "reading": "Leyendo vídeo…",
+    "decoding": "Decodificando fotogramas…",
+    "reframing": "Reformateando a 9:16…",
+    "encoding": "Codificando salida…",
+    "wrapping": "Finalizando…",
+    "done": "Listo",
+    "processingNote": "El procesamiento ocurre en tu navegador.",
+    "keepTabOpen": "Generalmente 2-4 veces la duración del clip. Mantén esta pestaña abierta.",
+    "cancel": "Cancelar"
+  },
+  "whisper": {
+    "downloadingModel": "Descargando modelo Whisper…",
+    "downloadingModelSub": "Descarga única, guardada en caché después",
+    "extractingAudio": "Extrayendo audio…",
+    "extractingAudioSub": "Leyendo la pista de audio del vídeo",
+    "transcribing": "Transcribiendo voz…",
+    "transcribingSub": "Whisper AI está procesando tu audio"
+  },
+  "done": {
+    "title": "Tu Short está listo",
+    "subtitle": "Descárgalo y súbelo directamente a YouTube Shorts.",
+    "download": "Descargar MP4",
+    "processedIn": "Procesado en {{time}}s",
+    "convertAnother": "Convertir otro vídeo"
+  },
+  "error": {
+    "title": "Algo salió mal",
+    "default": "Ocurrió un error inesperado durante el procesamiento.",
+    "tryAgain": "Intentar de nuevo"
+  },
+  "footer": {
+    "tagline": "Conversor gratuito de YouTube Shorts",
+    "privacy": "Tu vídeo nunca sale de tu dispositivo",
+    "product": "Producto",
+    "legal": "Legal",
+    "convert": "Convert to Shorts",
+    "about": "Acerca de",
+    "privacyPolicy": "Política de privacidad",
+    "terms": "Términos de servicio",
+    "contact": "Contacto"
+  },
+  "pages": {
+    "about": {
+      "title": "Acerca de Convert to Shorts",
+      "description": "Una herramienta gratuita y privada basada en navegador para convertir vídeos horizontales al formato YouTube Shorts."
+    },
+    "privacy": {
+      "title": "Política de privacidad",
+      "lastUpdated": "Última actualización: enero de 2025"
+    },
+    "terms": {
+      "title": "Términos de servicio",
+      "lastUpdated": "Última actualización: enero de 2025"
+    },
+    "contact": {
+      "title": "Contacto",
+      "description": "¿Tienes alguna pregunta, sugerencia o encontraste un error? Contáctanos por cualquiera de estos canales."
+    },
+    "notFound": {
+      "title": "Página no encontrada",
+      "subtitle": "La página que buscas no existe o ha sido movida.",
+      "goHome": "Ir al inicio",
+      "contactUs": "Contáctanos"
+    }
+  },
+  "languages": {
+    "en": "English",
+    "hi": "हिन्दी",
+    "es": "Español"
+  }
+}

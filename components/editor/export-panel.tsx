@@ -1,5 +1,14 @@
-import React from 'react';
-import type { CropMode, Quality, TextOverlay, TextColor, TextPosition, TextSize, AutoCaption } from "../../lib/types";
+import React from "react";
+import { useTranslation } from "react-i18next";
+import type {
+  CropMode,
+  Quality,
+  TextOverlay,
+  TextColor,
+  TextPosition,
+  TextSize,
+  AutoCaption,
+} from "../../lib/types";
 import type { WhisperStatus } from '../../src/hooks/use-whisper';
 
 type Props = {
@@ -21,7 +30,8 @@ type Props = {
   onGenerateCaptions: () => void;
 };
 
-export default function ExportPanel({ onExport,
+export default function ExportPanel({
+  onExport,
   cropMode,
   quality,
   onCropModeChange,
@@ -36,7 +46,9 @@ export default function ExportPanel({ onExport,
   whisperModelProgress,
   whisperTranscribeProgress,
   whisperError,
-  onGenerateCaptions }: Props) {
+  onGenerateCaptions,
+}: Props) {
+  const { t } = useTranslation();
 
   function updateOverlay<K extends keyof TextOverlay>(
     key: K,
@@ -53,147 +65,95 @@ export default function ExportPanel({ onExport,
   }
 
   const clipDuration = trimEnd - trimStart;
+
   return (
     <div className="flex flex-col gap-4 p-4 rounded-md bg-canvas-elevated border border-hairline">
+
+      {/* Header */}
       <div>
-        <p className="text-[13px] font-semibold text-ink">Export settings</p>
-        <p className="text-[12px] text-mute mt-0.5">Output: 1080 × 1920 · MP4</p>
+        <p className="text-[13px] font-semibold text-ink">{t("exportPanel.title")}</p>
+        <p className="text-[12px] text-mute mt-0.5">{t("exportPanel.output")}</p>
       </div>
+
       <Divider />
-      <div className='flex flex-col gap-2'>
+
+      {/* Style */}
+      <div className="flex flex-col gap-2">
         <p className="text-[12px] font-medium text-mute uppercase tracking-widest">
-          Style
+          {t("exportPanel.style")}
         </p>
-        <div className='flex flex-col gap-2'>
+        <div className="flex flex-col gap-2">
           <OptionCard
             selected={cropMode === "center"}
             onClick={() => onCropModeChange("center")}
-            title="Center crop"
-            description="Trims the sides, keeps the middle."
+            title={t("exportPanel.centerCrop")}
+            description={t("exportPanel.centerCropDesc")}
             icon={
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <rect
-                  x="1"
-                  y="4"
-                  width="18"
-                  height="12"
-                  rx="1.5"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                />
-                <rect
-                  x="7"
-                  y="4"
-                  width="6"
-                  height="12"
-                  rx="1"
-                  fill="currentColor"
-                  opacity="0.25"
-                />
-                <rect
-                  x="7.75"
-                  y="4.75"
-                  width="4.5"
-                  height="10.5"
-                  rx="0.5"
-                  stroke="currentColor"
-                  strokeWidth="1"
-                />
+                <rect x="1" y="4" width="18" height="12" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
+                <rect x="7" y="4" width="6" height="12" rx="1" fill="currentColor" opacity="0.25" />
+                <rect x="7.75" y="4.75" width="4.5" height="10.5" rx="0.5" stroke="currentColor" strokeWidth="1" />
               </svg>
             }
           />
           <OptionCard
             selected={cropMode === "blur-letterbox"}
             onClick={() => onCropModeChange("blur-letterbox")}
-            title="Blur letterbox"
-            description="Full frame centered, blurred background fills top and bottom."
+            title={t("exportPanel.blurLetterbox")}
+            description={t("exportPanel.blurLetterboxDesc")}
             icon={
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <rect
-                  x="5"
-                  y="1"
-                  width="10"
-                  height="18"
-                  rx="1.5"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                />
-                <rect
-                  x="5"
-                  y="1"
-                  width="10"
-                  height="4.5"
-                  rx="1.5"
-                  fill="currentColor"
-                  opacity="0.15"
-                />
-                <rect
-                  x="5"
-                  y="14.5"
-                  width="10"
-                  height="4.5"
-                  rx="1.5"
-                  fill="currentColor"
-                  opacity="0.15"
-                />
-                <rect
-                  x="5.75"
-                  y="6"
-                  width="8.5"
-                  height="8"
-                  rx="0.75"
-                  stroke="currentColor"
-                  strokeWidth="1"
-                />
+                <rect x="5" y="1" width="10" height="18" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
+                <rect x="5" y="1" width="10" height="4.5" rx="1.5" fill="currentColor" opacity="0.15" />
+                <rect x="5" y="14.5" width="10" height="4.5" rx="1.5" fill="currentColor" opacity="0.15" />
+                <rect x="5.75" y="6" width="8.5" height="8" rx="0.75" stroke="currentColor" strokeWidth="1" />
               </svg>
             }
           />
         </div>
       </div>
+
       <Divider />
+
       {/* Quality */}
-      <div className='flex flex-col gap-2'>
+      <div className="flex flex-col gap-2">
         <p className="text-[12px] font-medium text-mute uppercase tracking-widest">
-          Quality
+          {t("exportPanel.quality")}
         </p>
         <div className="flex gap-2">
           <QualityButton
             selected={quality === "high"}
             onClick={() => onQualityChange("high")}
-            label="High"
+            label={t("exportPanel.high")}
             sub="~8 Mbps"
           />
           <QualityButton
             selected={quality === "medium"}
             onClick={() => onQualityChange("medium")}
-            label="Medium"
+            label={t("exportPanel.medium")}
             sub="~4 Mbps"
           />
         </div>
         <p className="text-[11px] text-faint leading-relaxed">
-          {quality === "high"
-            ? "Best for uploading to YouTube directly."
-            : "Smaller file size, good for sharing."}
+          {quality === "high" ? t("exportPanel.highDesc") : t("exportPanel.mediumDesc")}
         </p>
       </div>
+
       <Divider />
 
       {/* Text overlay */}
       <div className="flex flex-col gap-3">
-        {/* Text overlay header */}
         <div className="flex items-center justify-between">
           <div className="flex flex-col gap-0.5">
             <p className="text-[12px] font-medium text-mute uppercase tracking-widest">
-              Text overlay
+              {t("exportPanel.textOverlay")}
             </p>
             {autoCaption.enabled && (
               <p className="text-[10px] text-faint">
-                Disabled while auto captions are on
+                {t("exportPanel.textOverlayDisabled")}
               </p>
             )}
           </div>
-
-          {/* Toggle */}
           <button
             onClick={() => {
               if (autoCaption.enabled) return;
@@ -201,14 +161,12 @@ export default function ExportPanel({ onExport,
             }}
             className={[
               "w-10 h-5 rounded-pill border transition-colors duration-150 relative shrink-0",
-              autoCaption.enabled
-                ? "opacity-40 cursor-not-allowed"
-                : "",
+              autoCaption.enabled ? "opacity-40 cursor-not-allowed" : "",
               textOverlay.enabled && !autoCaption.enabled
                 ? "bg-accent border-accent"
                 : "bg-canvas border-hairline",
             ].join(" ")}
-            aria-label="Toggle text overlay"
+            aria-label={t("exportPanel.textOverlay")}
           >
             <div
               className={[
@@ -223,13 +181,11 @@ export default function ExportPanel({ onExport,
 
         {textOverlay.enabled && (
           <div className="flex flex-col gap-3">
-
-            {/* Text input */}
             <textarea
               rows={2}
               value={textOverlay.text}
               onChange={(e) => updateOverlay("text", e.target.value)}
-              placeholder="Enter your text…"
+              placeholder={t("exportPanel.textPlaceholder")}
               maxLength={100}
               className="w-full px-3 py-2 rounded-sm border border-hairline bg-canvas text-ink text-[13px] placeholder:text-faint focus:outline-none focus:border-accent transition-colors resize-none"
             />
@@ -237,7 +193,7 @@ export default function ExportPanel({ onExport,
             {/* Position */}
             <div className="flex flex-col gap-1.5">
               <p className="text-[11px] font-medium text-mute uppercase tracking-widest">
-                Position
+                {t("exportPanel.position")}
               </p>
               <div className="flex gap-2">
                 {(["top", "center", "bottom"] as TextPosition[]).map((pos) => (
@@ -251,7 +207,7 @@ export default function ExportPanel({ onExport,
                         : "border-hairline bg-canvas text-mute hover:border-accent/50",
                     ].join(" ")}
                   >
-                    {pos}
+                    {t(`exportPanel.${pos}`)}
                   </button>
                 ))}
               </div>
@@ -260,7 +216,7 @@ export default function ExportPanel({ onExport,
             {/* Color */}
             <div className="flex flex-col gap-1.5">
               <p className="text-[11px] font-medium text-mute uppercase tracking-widest">
-                Color
+                {t("exportPanel.color")}
               </p>
               <div className="flex gap-2">
                 {([
@@ -289,7 +245,7 @@ export default function ExportPanel({ onExport,
             {/* Size */}
             <div className="flex flex-col gap-1.5">
               <p className="text-[11px] font-medium text-mute uppercase tracking-widest">
-                Size
+                {t("exportPanel.size")}
               </p>
               <div className="flex gap-2">
                 {(["small", "medium", "large"] as TextSize[]).map((s) => (
@@ -303,12 +259,11 @@ export default function ExportPanel({ onExport,
                         : "border-hairline bg-canvas text-mute hover:border-accent/50",
                     ].join(" ")}
                   >
-                    {s}
+                    {t(`exportPanel.${s}`)}
                   </button>
                 ))}
               </div>
             </div>
-
           </div>
         )}
       </div>
@@ -319,16 +274,12 @@ export default function ExportPanel({ onExport,
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <p className="text-[12px] font-medium text-mute uppercase tracking-widest">
-            Auto captions
+            {t("exportPanel.autoCaptions")}
           </p>
           <button
             onClick={() => {
               const next = !autoCaption.enabled;
-              onAutoCaptionChange({
-                ...autoCaption,
-                enabled: next,
-              });
-              // Disable text overlay when captions are enabled
+              onAutoCaptionChange({ ...autoCaption, enabled: next });
               if (next && textOverlay.enabled) {
                 onTextOverlayChange({ ...textOverlay, enabled: false });
               }
@@ -339,7 +290,7 @@ export default function ExportPanel({ onExport,
                 ? "bg-accent border-accent"
                 : "bg-canvas border-hairline",
             ].join(" ")}
-            aria-label="Toggle auto captions"
+            aria-label={t("exportPanel.autoCaptions")}
           >
             <div
               className={[
@@ -355,13 +306,7 @@ export default function ExportPanel({ onExport,
 
             {/* Privacy note */}
             <div className="flex items-start gap-2 p-3 rounded-sm bg-accent/5 border border-accent/20">
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 14 14"
-                fill="none"
-                className="text-accent shrink-0 mt-0.5"
-              >
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="text-accent shrink-0 mt-0.5">
                 <path
                   d="M7 1L2 3.5V7C2 9.76 4.24 12.35 7 13C9.76 12.35 12 9.76 12 7V3.5L7 1Z"
                   stroke="currentColor"
@@ -370,20 +315,18 @@ export default function ExportPanel({ onExport,
                 />
               </svg>
               <p className="text-[11px] text-accent leading-relaxed">
-                Powered by Whisper AI — runs entirely in your browser.
-                Audio never leaves your device. First use downloads ~75MB model
-                (cached after that).
+                {t("exportPanel.autoCaptionsPrivacy")}
               </p>
             </div>
 
-            {/* Generate button / status */}
+            {/* Whisper status */}
             {whisperStatus === "idle" || whisperStatus === "error" ? (
               <div className="flex flex-col gap-2">
                 <button
                   onClick={onGenerateCaptions}
                   className="w-full py-2.5 rounded-sm border border-accent bg-accent/5 text-accent text-[13px] font-semibold cursor-pointer hover:bg-accent hover:text-accent-ink transition-colors"
                 >
-                  Generate Captions
+                  {t("exportPanel.generateCaptions")}
                 </button>
                 {whisperError && (
                   <p className="text-[11px] text-error leading-relaxed">
@@ -393,27 +336,27 @@ export default function ExportPanel({ onExport,
               </div>
             ) : whisperStatus === "loading-model" ? (
               <WhisperProgress
-                label="Downloading Whisper model…"
-                sub="One-time download, cached after this"
+                label={t("whisper.downloadingModel")}
+                sub={t("whisper.downloadingModelSub")}
                 progress={whisperModelProgress}
               />
             ) : whisperStatus === "extracting-audio" ? (
               <WhisperProgress
-                label="Extracting audio…"
-                sub="Reading audio track from video"
+                label={t("whisper.extractingAudio")}
+                sub={t("whisper.extractingAudioSub")}
                 progress={100}
                 indeterminate
               />
             ) : whisperStatus === "transcribing" ? (
               <WhisperProgress
-                label="Transcribing speech…"
-                sub="Whisper AI is processing your audio"
+                label={t("whisper.transcribing")}
+                sub={t("whisper.transcribingSub")}
                 progress={whisperTranscribeProgress}
               />
             ) : whisperStatus === "done" && autoCaption.generated ? (
               <div className="flex flex-col gap-3">
 
-                {/* Success + segment count */}
+                {/* Success */}
                 <div className="flex items-center gap-2">
                   <div className="w-5 h-5 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
                     <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
@@ -427,13 +370,13 @@ export default function ExportPanel({ onExport,
                     </svg>
                   </div>
                   <p className="text-[12px] text-ink font-medium">
-                    {autoCaption.segments.length} caption segments generated
+                    {t("exportPanel.captionSegments", { count: autoCaption.segments.length })}
                   </p>
                   <button
                     onClick={onGenerateCaptions}
                     className="ml-auto text-[11px] text-mute hover:text-ink transition-colors bg-transparent border-none cursor-pointer"
                   >
-                    Regenerate
+                    {t("exportPanel.regenerate")}
                   </button>
                 </div>
 
@@ -451,10 +394,10 @@ export default function ExportPanel({ onExport,
                   ))}
                 </div>
 
-                {/* Caption style */}
+                {/* Caption color */}
                 <div className="flex flex-col gap-2">
                   <p className="text-[11px] font-medium text-mute uppercase tracking-widest">
-                    Caption color
+                    {t("exportPanel.captionColor")}
                   </p>
                   <div className="flex gap-2">
                     {([
@@ -483,9 +426,10 @@ export default function ExportPanel({ onExport,
                   </div>
                 </div>
 
+                {/* Caption size */}
                 <div className="flex flex-col gap-2">
                   <p className="text-[11px] font-medium text-mute uppercase tracking-widest">
-                    Caption size
+                    {t("exportPanel.captionSize")}
                   </p>
                   <div className="flex gap-2">
                     {(["small", "medium", "large"] as TextSize[]).map((s) => (
@@ -499,7 +443,7 @@ export default function ExportPanel({ onExport,
                             : "border-hairline bg-canvas text-mute hover:border-accent/50",
                         ].join(" ")}
                       >
-                        {s}
+                        {t(`exportPanel.${s}`)}
                       </button>
                     ))}
                   </div>
@@ -513,40 +457,47 @@ export default function ExportPanel({ onExport,
       </div>
 
       <Divider />
+
       {/* Output info */}
       <div className="flex flex-col gap-1.5">
         <p className="text-[12px] font-medium text-mute uppercase tracking-widest">
-          Output
+          {t("exportPanel.outputSection")}
         </p>
         <div className="flex flex-col gap-1">
-          <InfoRow label="Format" value="MP4 (H.264)" />
-          <InfoRow label="Resolution" value="1080 × 1920" />
-          <InfoRow label="Aspect ratio" value="9:16" />
+          <InfoRow label={t("exportPanel.format")} value="MP4 (H.264)" />
+          <InfoRow label={t("exportPanel.resolution")} value="1080 × 1920" />
+          <InfoRow label={t("exportPanel.aspectRatio")} value="9:16" />
           <InfoRow
-            label="Style"
-            value={cropMode === "center" ? "Center crop" : "Blur letterbox"}
+            label={t("exportPanel.style")}
+            value={cropMode === "center"
+              ? t("exportPanel.centerCrop")
+              : t("exportPanel.blurLetterbox")}
           />
           <InfoRow
-            label="Bitrate"
+            label={t("exportPanel.bitrate")}
             value={quality === "high" ? "~8 Mbps" : "~4 Mbps"}
           />
           <InfoRow
-            label="Clip duration"
+            label={t("exportPanel.clipDuration")}
             value={`${clipDuration.toFixed(1)}s`}
           />
           {textOverlay.enabled && textOverlay.text.trim() && (
-            <InfoRow label="Text" value={`"${textOverlay.text.slice(0, 20)}${textOverlay.text.length > 20 ? "…" : ""}"`} />
+            <InfoRow
+              label={t("exportPanel.text")}
+              value={`"${textOverlay.text.slice(0, 20)}${textOverlay.text.length > 20 ? "…" : ""}"`}
+            />
           )}
           {autoCaption.enabled && autoCaption.generated && (
             <InfoRow
-              label="Captions"
-              value={`${autoCaption.segments.length} segments`}
+              label={t("exportPanel.captions")}
+              value={t("exportPanel.segments", { count: autoCaption.segments.length })}
             />
           )}
         </div>
       </div>
 
       <Divider />
+
       {/* Privacy note */}
       <div className="flex items-start gap-2">
         <svg
@@ -571,23 +522,26 @@ export default function ExportPanel({ onExport,
           />
         </svg>
         <p className="text-[11px] text-faint leading-relaxed">
-          Processed entirely in your browser. Your video is never uploaded or stored anywhere.
+          {t("exportPanel.privacyNote")}
         </p>
       </div>
+
       {/* Export button */}
       <button
         onClick={onExport}
         className="w-full py-2.5 rounded-pill bg-accent text-accent-ink text-[14px] font-semibold cursor-pointer border-none hover:opacity-90 transition-opacity"
       >
-        Export Short
+        {t("exportPanel.exportButton")}
       </button>
+
     </div>
   );
 }
 
-// SUB COMPONENETS
+// ── Sub components ─────────────────────────────────────────────────────────────
+
 function Divider() {
-  return <div className="h-px bg-hairline w-full"></div>
+  return <div className="h-px bg-hairline w-full" />;
 }
 
 function InfoRow({ label, value }: { label: string; value: string }) {
@@ -596,7 +550,7 @@ function InfoRow({ label, value }: { label: string; value: string }) {
       <span className="text-[12px] text-mute">{label}</span>
       <span className="text-[12px] font-medium text-body">{value}</span>
     </div>
-  )
+  );
 }
 
 function OptionCard({
@@ -622,7 +576,6 @@ function OptionCard({
           : "border-hairline bg-canvas hover:border-accent/50",
       ].join(" ")}
     >
-      {/* Icon */}
       <div
         className={[
           "shrink-0 w-9 h-9 rounded-sm flex items-center justify-center transition-colors duration-150",
@@ -631,23 +584,14 @@ function OptionCard({
       >
         {icon}
       </div>
-
-      {/* Text */}
       <div className="flex flex-col gap-0.5 pt-0.5">
-        <span
-          className={[
-            "text-[13px] font-semibold",
-            selected ? "text-accent" : "text-ink",
-          ].join(" ")}
-        >
+        <span className={["text-[13px] font-semibold", selected ? "text-accent" : "text-ink"].join(" ")}>
           {title}
         </span>
-        <span className="text-[12px] text-mute leading-relaxed">
+        <span className="text-[12px] text-mute leading-relaxed break-words">
           {description}
         </span>
       </div>
-
-      {/* Selection dot */}
       <div className="ml-auto shrink-0 mt-0.5">
         <div
           className={[
@@ -655,9 +599,7 @@ function OptionCard({
             selected ? "border-accent" : "border-hairline",
           ].join(" ")}
         >
-          {selected && (
-            <div className="w-2 h-2 rounded-full bg-accent" />
-          )}
+          {selected && <div className="w-2 h-2 rounded-full bg-accent" />}
         </div>
       </div>
     </button>
@@ -685,12 +627,7 @@ function QualityButton({
           : "border-hairline bg-canvas hover:border-accent/50",
       ].join(" ")}
     >
-      <span
-        className={[
-          "text-[13px] font-semibold",
-          selected ? "text-accent" : "text-ink",
-        ].join(" ")}
-      >
+      <span className={["text-[13px] font-semibold", selected ? "text-accent" : "text-ink"].join(" ")}>
         {label}
       </span>
       <span className="text-[11px] text-mute font-mono">{sub}</span>

@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
+import "./i18n/index";
 import App from "./App";
 
 // Apply saved theme before first paint to avoid flash

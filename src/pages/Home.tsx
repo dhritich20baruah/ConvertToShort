@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "../../components/ui/language-switcher";
 import { useState, useEffect } from "react";
 import ThemeToggle from "../../components/ui/theme-toggle";
 import UploadDropzone from "../../components/editor/upload-dropzone";
@@ -41,6 +43,8 @@ export default function Home() {
     color: "white",
     size: "medium",
   });
+
+  const { t } = useTranslation();
 
   // ── Processor hook ─────────────────────────────────────────────────────────
   const {
@@ -169,37 +173,38 @@ export default function Home() {
             </svg>
           </div>
           <span className="text-[15px] font-semibold text-ink tracking-tight">
-            Convert to Shorts
+            {t("nav.brand")}
           </span>
         </div>
-        {/* Right side */}
+
         <div className="flex items-center gap-3">
           {stage !== "upload" && (
             <button
               onClick={handleReset}
               className="text-[13px] font-medium text-mute bg-transparent border-none cursor-pointer px-2 py-1 rounded-sm hover:text-ink transition-colors"
             >
-              Start over
+              {t("nav.startOver")}
             </button>
           )}
+          <LanguageSwitcher />
           <ThemeToggle />
         </div>
       </header>
+
       <main className="flex-1 flex flex-col items-center px-6 py-10 gap-8 relative">
         {stage === "upload" && (
           <>
-            <div className="text-center max-w-120">
+            <div className="text-center max-w-[480px]">
               <h1 className="text-[28px] font-bold text-ink tracking-tight leading-tight mb-2.5">
-                Reframe video for YouTube Shorts
+                {t("upload.heading")}
               </h1>
               <p className="text-[15px] text-body leading-relaxed">
-                Crop horizontal video into 9:16 format right in your browser.
-                Nothing is uploaded — your video never leaves your device.
+                {t("upload.subheading")}
               </p>
             </div>
             <UploadDropzone onFileAccepted={handleFileAccepted} />
             <p className="text-xs text-faint text-center">
-              MP4 or MOV · Max 10 minutes · Up to 1080p
+              {t("upload.dropzone.hint")}
             </p>
           </>
         )}
@@ -241,7 +246,7 @@ export default function Home() {
 
         {/* Done stage */}
         {stage === "done" && outputUrl && (
-          <div className="flex flex-col items-center gap-5 max-w-100 text-center">
+          <div className="flex flex-col items-center gap-5 max-w-[400px] text-center">
             <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center">
               <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
                 <path
@@ -255,20 +260,22 @@ export default function Home() {
             </div>
             <div>
               <h2 className="text-[22px] font-bold text-ink tracking-tight mb-1.5">
-                Your Short is ready
+                {t("done.title")}
               </h2>
+              <p className="text-sm text-body">
+                {t("done.subtitle")}
+              </p>
               {elapsedTime && (
-                <p className="text-[12px] text-faint font-mono">
-                  Processed in {elapsedTime}s
+                <p className="text-[12px] text-faint font-mono mt-1">
+                  {t("done.processedIn", { time: elapsedTime })}
                 </p>
               )}
-              <p className="text-sm text-body">
-                Download and upload directly to YouTube Shorts.
-              </p>
             </div>
-            <a href={outputUrl}
+            <a
+              href={outputUrl}
               download="short.mp4"
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-pill bg-accent text-accent-ink font-semibold text-sm no-underline">
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-pill bg-accent text-accent-ink font-semibold text-sm no-underline hover:opacity-90 transition-opacity"
+            >
               <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
                 <path
                   d="M7.5 2v8M7.5 10L4.5 7M7.5 10L10.5 7"
@@ -284,20 +291,20 @@ export default function Home() {
                   strokeLinecap="round"
                 />
               </svg>
-              Download MP4
+              {t("done.download")}
             </a>
             <button
               onClick={handleReset}
-              className="text-[13px] text-mute bg-transparent border-none cursor-pointer"
+              className="text-[13px] text-mute bg-transparent border-none cursor-pointer hover:text-ink transition-colors"
             >
-              Convert another video
+              {t("done.convertAnother")}
             </button>
           </div>
         )}
 
         {/* Error stage */}
         {stage === "error" && (
-          <div className="flex flex-col items-center gap-5 max-w-100 text-center">
+          <div className="flex flex-col items-center gap-5 max-w-[400px] text-center">
             <div className="w-12 h-12 rounded-full bg-error/10 flex items-center justify-center">
               <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
                 <circle cx="11" cy="11" r="9" stroke="var(--color-error)" strokeWidth="1.5" />
@@ -307,17 +314,17 @@ export default function Home() {
             </div>
             <div>
               <h2 className="text-[22px] font-bold text-ink tracking-tight mb-1.5">
-                Something went wrong
+                {t("error.title")}
               </h2>
               <p className="text-sm text-body leading-relaxed">
-                {errorMessage ?? "An unexpected error occurred during processing."}
+                {errorMessage ?? t("error.default")}
               </p>
             </div>
             <button
               onClick={handleReset}
               className="inline-flex items-center gap-2 px-6 py-2.5 rounded-pill bg-accent text-accent-ink font-semibold text-sm border-none cursor-pointer hover:opacity-90 transition-opacity"
             >
-              Try again
+              {t("error.tryAgain")}
             </button>
           </div>
         )}

@@ -2,14 +2,15 @@ import { Link } from "react-router-dom";
 import ThemeToggle from "../../components/ui/theme-toggle";
 import Footer from "../../components/landing/Footer";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "../../components/ui/language-switcher";
 
 export default function NotFound() {
+  const { t } = useTranslation();
+
   useEffect(() => {
-    // Set canonical to homepage for 404 pages
     const tag = document.querySelector<HTMLLinkElement>("link[rel='canonical']");
     if (tag) tag.setAttribute("href", "https://converttoshorts.com/");
-
-    // Also add noindex so Google doesn't try to index 404 pages
     let meta = document.querySelector<HTMLMetaElement>("meta[name='robots']");
     if (!meta) {
       meta = document.createElement("meta");
@@ -17,17 +18,14 @@ export default function NotFound() {
       document.head.appendChild(meta);
     }
     meta.setAttribute("content", "noindex, nofollow");
-
     return () => {
-      // Restore robots tag when leaving 404 page
       const robotsMeta = document.querySelector<HTMLMetaElement>("meta[name='robots']");
       if (robotsMeta) robotsMeta.setAttribute("content", "index, follow");
     };
   }, []);
+
   return (
     <div className="min-h-screen flex flex-col bg-canvas">
-
-      {/* Navbar */}
       <header className="h-14 sticky top-0 z-50 flex items-center justify-between px-6 bg-canvas-elevated border-b border-hairline">
         <Link to="/" className="flex items-center gap-2.5 no-underline">
           <div className="w-7 h-7 rounded-sm bg-accent flex items-center justify-center shrink-0">
@@ -42,13 +40,15 @@ export default function NotFound() {
             </svg>
           </div>
           <span className="text-[15px] font-semibold text-ink tracking-tight">
-            Convert to Shorts
+            {t("nav.brand")}
           </span>
         </Link>
-        <ThemeToggle />
+        <div className="flex items-center gap-3">
+          <LanguageSwitcher />
+          <ThemeToggle />
+        </div>
       </header>
 
-      {/* 404 content */}
       <main className="flex-1 flex flex-col items-center justify-center px-6 gap-6 text-center">
         <div
           className="text-[120px] font-bold leading-none tracking-tight"
@@ -56,12 +56,12 @@ export default function NotFound() {
         >
           404
         </div>
-        <div className="flex flex-col gap-2 max-w-100">
+        <div className="flex flex-col gap-2 max-w-[400px]">
           <h1 className="text-[22px] font-bold text-ink tracking-tight">
-            Page not found
+            {t("pages.notFound.title")}
           </h1>
           <p className="text-[14px] text-body leading-relaxed">
-            The page you're looking for doesn't exist or has been moved.
+            {t("pages.notFound.subtitle")}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -69,13 +69,13 @@ export default function NotFound() {
             to="/"
             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-pill bg-accent text-accent-ink font-semibold text-[14px] no-underline hover:opacity-90 transition-opacity"
           >
-            Go to homepage
+            {t("pages.notFound.goHome")}
           </Link>
           <Link
             to="/contact"
             className="text-[14px] text-mute no-underline hover:text-ink transition-colors"
           >
-            Contact us
+            {t("pages.notFound.contactUs")}
           </Link>
         </div>
       </main>

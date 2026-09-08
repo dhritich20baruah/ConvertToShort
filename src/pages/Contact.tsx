@@ -1,5 +1,7 @@
 import PageLayout from "../../components/landing/page-layout";
 import { useCanonical } from "../hooks/use-canonical";
+import { useTranslation } from "react-i18next";
+
 const CONTACT = {
   email: "dhriticodes20@gmail.com",
   github: "https://github.com/dhritich20baruah",
@@ -7,11 +9,13 @@ const CONTACT = {
 };
 
 export default function Contact() {
+  const { t } = useTranslation();
   useCanonical("/contact");
+
   return (
     <PageLayout
-      title="Contact"
-      description="Have a question, suggestion, or found a bug? Reach out through any of the channels below."
+      title={t("pages.about.title")}
+      description={t("pages.about.description")}
     >
       <div className="flex flex-col gap-4 max-w-120">
 

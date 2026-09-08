@@ -1,0 +1,144 @@
+{
+  "nav": {
+    "brand": "Convert to Shorts",
+    "startOver": "फिर से शुरू करें"
+  },
+  "upload": {
+    "heading": "YouTube Shorts के लिए वीडियो रीफ्रेम करें",
+    "subheading": "अपने ब्राउज़र में ही horizontal वीडियो को 9:16 फॉर्मेट में क्रॉप करें। कुछ भी अपलोड नहीं होता — आपका वीडियो आपके डिवाइस से बाहर नहीं जाता।",
+    "dropzone": {
+      "idle_title": "यहाँ वीडियो छोड़ें",
+      "idle_sub": "या फ़ाइल चुनें",
+      "dragging": "वीडियो लोड करने के लिए छोड़ें",
+      "loading": "वीडियो पढ़ा जा रहा है…",
+      "hint": "MP4 या MOV · अधिकतम 10 मिनट · 1080p तक"
+    },
+    "errors": {
+      "type": "केवल MP4 और MOV फ़ाइलें समर्थित हैं।",
+      "duration": "वीडियो {{duration}}s का है — अधिकतम 10 मिनट की अनुमति है।",
+      "resolution": "रिज़ॉल्यूशन {{width}}×{{height}} की सीमा 1920×1080 से अधिक है।",
+      "read": "यह फ़ाइल नहीं पढ़ी जा सकी। कोई दूसरा वीडियो आज़माएँ।",
+      "retry": "दूसरी फ़ाइल के लिए क्लिक करें"
+    }
+  },
+  "editor": {
+    "cropWindow": "क्रॉप विंडो",
+    "dragToReposition": "स्थान बदलने के लिए हाइलाइट किए गए क्षेत्र को खींचें",
+    "trimClip": "क्लिप ट्रिम करें",
+    "playback": "प्लेबैक"
+  },
+  "exportPanel": {
+    "title": "एक्सपोर्ट सेटिंग्स",
+    "output": "आउटपुट: 1080 × 1920 · MP4",
+    "style": "स्टाइल",
+    "centerCrop": "सेंटर क्रॉप",
+    "centerCropDesc": "किनारे हटाता है, बीच का हिस्सा रखता है।",
+    "blurLetterbox": "ब्लर लेटरबॉक्स",
+    "blurLetterboxDesc": "पूरा फ्रेम बीच में, ऊपर-नीचे धुंधला बैकग्राउंड।",
+    "quality": "गुणवत्ता",
+    "high": "उच्च",
+    "medium": "मध्यम",
+    "highDesc": "सीधे YouTube पर अपलोड के लिए सबसे अच्छा।",
+    "mediumDesc": "छोटी फ़ाइल साइज़, शेयरिंग के लिए अच्छी।",
+    "textOverlay": "टेक्स्ट ओवरले",
+    "textOverlayDisabled": "ऑटो कैप्शन चालू होने पर अक्षम",
+    "textPlaceholder": "अपना टेक्स्ट दर्ज करें…",
+    "position": "स्थिति",
+    "top": "ऊपर",
+    "center": "बीच",
+    "bottom": "नीचे",
+    "color": "रंग",
+    "size": "आकार",
+    "small": "छोटा",
+    "large": "बड़ा",
+    "autoCaptions": "ऑटो कैप्शन",
+    "autoCaptionsPrivacy": "Whisper AI द्वारा संचालित — पूरी तरह आपके ब्राउज़र में चलता है। ऑडियो आपके डिवाइस से बाहर नहीं जाता। पहली बार ~75MB मॉडल डाउनलोड होता है।",
+    "generateCaptions": "कैप्शन बनाएँ",
+    "regenerate": "फिर से बनाएँ",
+    "captionSegments": "{{count}} कैप्शन सेगमेंट बने",
+    "captionColor": "कैप्शन रंग",
+    "captionSize": "कैप्शन आकार",
+    "outputSection": "आउटपुट",
+    "format": "फॉर्मेट",
+    "resolution": "रिज़ॉल्यूशन",
+    "aspectRatio": "आस्पेक्ट रेशियो",
+    "bitrate": "बिटरेट",
+    "clipDuration": "क्लिप अवधि",
+    "text": "टेक्स्ट",
+    "captions": "कैप्शन",
+    "segments": "{{count}} सेगमेंट",
+    "privacyNote": "पूरी तरह आपके ब्राउज़र में प्रोसेस होता है। आपका वीडियो कहीं भी अपलोड या स्टोर नहीं होता।",
+    "exportButton": "Short एक्सपोर्ट करें"
+  },
+  "progress": {
+    "reading": "वीडियो पढ़ा जा रहा है…",
+    "decoding": "फ्रेम डीकोड हो रहे हैं…",
+    "reframing": "9:16 में रीफ्रेम हो रहा है…",
+    "encoding": "एन्कोड हो रहा है…",
+    "wrapping": "पूरा हो रहा है…",
+    "done": "हो गया",
+    "processingNote": "प्रोसेसिंग आपके ब्राउज़र में हो रही है।",
+    "keepTabOpen": "आमतौर पर क्लिप की अवधि का 2-4 गुना समय लगता है। टैब खुला रखें।",
+    "cancel": "रद्द करें"
+  },
+  "whisper": {
+    "downloadingModel": "Whisper मॉडल डाउनलोड हो रहा है…",
+    "downloadingModelSub": "एक बार डाउनलोड, उसके बाद कैश",
+    "extractingAudio": "ऑडियो निकाला जा रहा है…",
+    "extractingAudioSub": "वीडियो से ऑडियो ट्रैक पढ़ा जा रहा है",
+    "transcribing": "स्पीच ट्रांसक्राइब हो रही है…",
+    "transcribingSub": "Whisper AI आपका ऑडियो प्रोसेस कर रहा है"
+  },
+  "done": {
+    "title": "आपका Short तैयार है",
+    "subtitle": "डाउनलोड करें और सीधे YouTube Shorts पर अपलोड करें।",
+    "download": "MP4 डाउनलोड करें",
+    "processedIn": "{{time}}s में प्रोसेस हुआ",
+    "convertAnother": "दूसरा वीडियो कन्वर्ट करें"
+  },
+  "error": {
+    "title": "कुछ गलत हुआ",
+    "default": "प्रोसेसिंग के दौरान अप्रत्याशित त्रुटि हुई।",
+    "tryAgain": "फिर कोशिश करें"
+  },
+  "footer": {
+    "tagline": "मुफ़्त YouTube Shorts कन्वर्टर",
+    "privacy": "आपका वीडियो आपके डिवाइस से बाहर नहीं जाता",
+    "product": "उत्पाद",
+    "legal": "कानूनी",
+    "convert": "Convert to Shorts",
+    "about": "हमारे बारे में",
+    "privacyPolicy": "गोपनीयता नीति",
+    "terms": "सेवा की शर्तें",
+    "contact": "संपर्क करें"
+  },
+  "pages": {
+    "about": {
+      "title": "Convert to Shorts के बारे में",
+      "description": "horizontal वीडियो को YouTube Shorts फॉर्मेट में बदलने के लिए एक मुफ़्त, निजी, ब्राउज़र-आधारित टूल।"
+    },
+    "privacy": {
+      "title": "गोपनीयता नीति",
+      "lastUpdated": "अंतिम अपडेट: जनवरी 2025"
+    },
+    "terms": {
+      "title": "सेवा की शर्तें",
+      "lastUpdated": "अंतिम अपडेट: जनवरी 2025"
+    },
+    "contact": {
+      "title": "संपर्क करें",
+      "description": "कोई सवाल, सुझाव या बग मिला? नीचे दिए चैनलों के ज़रिए संपर्क करें।"
+    },
+    "notFound": {
+      "title": "पेज नहीं मिला",
+      "subtitle": "जो पेज आप ढूंढ रहे हैं वह मौजूद नहीं है या हटा दिया गया है।",
+      "goHome": "होमपेज पर जाएँ",
+      "contactUs": "संपर्क करें"
+    }
+  },
+  "languages": {
+    "en": "English",
+    "hi": "हिन्दी",
+    "es": "Español"
+  }
+}

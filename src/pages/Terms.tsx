@@ -1,13 +1,16 @@
 import PageLayout from "../../components/landing/page-layout";
 import { useCanonical } from "../hooks/use-canonical";
+import { useTranslation } from "react-i18next";
 
 export default function Terms() {
+  const { t } = useTranslation();
   useCanonical("/terms");
+  
   return (
-    <PageLayout
-      title="Terms of Service"
-      description="Last updated: January 2025"
-    >
+   <PageLayout
+        title={t("pages.about.title")}
+        description={t("pages.about.description")}
+      >
       <div className="flex flex-col gap-10">
 
         <Section title="Acceptance of terms">
