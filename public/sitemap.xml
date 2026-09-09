@@ -1,39 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
+  <!-- English (default) -->
   <url>
     <loc>https://converttoshorts.com/</loc>
-    <lastmod>2025-01-01</lastmod>
+    <lastmod>2026-09-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://converttoshorts.com/"/>
+    <xhtml:link rel="alternate" hreflang="hi" href="https://converttoshorts.com/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://converttoshorts.com/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://converttoshorts.com/"/>
   </url>
 
   <url>
     <loc>https://converttoshorts.com/about</loc>
-    <lastmod>2025-01-01</lastmod>
+    <lastmod>2026-09-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://converttoshorts.com/about"/>
+    <xhtml:link rel="alternate" hreflang="hi" href="https://converttoshorts.com/about"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://converttoshorts.com/about"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://converttoshorts.com/about"/>
   </url>
 
   <url>
     <loc>https://converttoshorts.com/contact</loc>
-    <lastmod>2025-01-01</lastmod>
+    <lastmod>2026-09-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://converttoshorts.com/contact"/>
+    <xhtml:link rel="alternate" hreflang="hi" href="https://converttoshorts.com/contact"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://converttoshorts.com/contact"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://converttoshorts.com/contact"/>
   </url>
 
   <url>
     <loc>https://converttoshorts.com/privacy-policy</loc>
-    <lastmod>2025-01-01</lastmod>
+    <lastmod>2026-09-08</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://converttoshorts.com/privacy-policy"/>
+    <xhtml:link rel="alternate" hreflang="hi" href="https://converttoshorts.com/privacy-policy"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://converttoshorts.com/privacy-policy"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://converttoshorts.com/privacy-policy"/>
   </url>
 
   <url>
     <loc>https://converttoshorts.com/terms</loc>
-    <lastmod>2025-01-01</lastmod>
+    <lastmod>2026-09-08</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://converttoshorts.com/terms"/>
+    <xhtml:link rel="alternate" hreflang="hi" href="https://converttoshorts.com/terms"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://converttoshorts.com/terms"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://converttoshorts.com/terms"/>
   </url>
 
 </urlset>
